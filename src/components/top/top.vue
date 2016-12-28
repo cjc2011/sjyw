@@ -28,7 +28,6 @@
 
   .top {
     position: fixed;
-    top: 40px;
     left: 0px;
     width: 100%;
     display: flex;
@@ -40,7 +39,7 @@
     box-sizing: border-box;
     padding: 0 15px;
     justify-content: space-between;
-
+    z-index:10;
     .addrees {
       font-size: 0;
       color: #ffffff;
