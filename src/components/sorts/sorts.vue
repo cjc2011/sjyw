@@ -27,7 +27,6 @@
     display: flex;
     padding:12px 0;
     font-size:0px;
-    border-bottom: 1px solid #cccccc;
     .sorts-item{
       flex:1;
       text-align: center;
