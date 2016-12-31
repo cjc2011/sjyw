@@ -11,7 +11,7 @@
           </div>
           <div class="sight-content">
             <div class="leav">
-              <span class="text">景区等级:</span>
+              <span class="text">景区等级: </span>
               <div class="rater-warpper">
                 <rater :value=3 star="A" disabled  :margin="-4" :font-size="16"></rater>
               </div>
@@ -47,7 +47,7 @@
     },
     methods: {
       split(str){
-        let arr = str.split(',').slice(0,3);
+        let arr = str.split(',').slice(0,2);
         return arr
       }
     },
@@ -108,7 +108,7 @@
       justify-content:space-between;
       align-items: center;
       .leav{
-        flex:3;
+        flex:4;
         display: flex;
         position: relative;
         left: -6px;
@@ -127,7 +127,7 @@
         }
       }
       .project{
-        flex:4;
+        flex:3;
         list-style: none;
         font-size:0px;
         vertical-align: middle;
@@ -154,7 +154,7 @@
          }
       }
       .sell{
-        flex:2;
+        flex:3;
         font-size: 12px;
         color: #666666;
         text-align: right;

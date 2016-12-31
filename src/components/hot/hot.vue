@@ -1,28 +1,36 @@
 <template>
   <div class="hot">
     <h1 class="title">当季热点</h1>
-    <div class="hot-content">
+    <div class="hot-content" v-if="hotimg.length">
       <div class="hot-left vux-1px-b">
-        <img :src="img[0]" alt="热门主题">
-        <h3 class="name">{{{title[0]}}}</h3>
-        <p class="desc">{{{content[0]}}}</p>
+        <a :href="hotimg[0].n_pic">
+          <img :src="url+hotimg[0].s_pic" alt="热门主题">
+          <h3 class="name">{{{title[0]}}}</h3>
+          <p class="desc">{{{content[0]}}}</p>
+        </a>
       </div>
-      <div class="hot-right vux-1px-t">
+      <div class="hot-right vux-1px-t" >
         <div class="hot-left-t">
-          <img :src="img[1]" alt="热门主题">
-          <h3 class="name">{{{title[1]}}}</h3>
-          <p class="desc">{{{content[1]}}}</p>
+          <a :href="hotimg[1].n_pic">
+            <img :src="url+hotimg[1].s_pic" alt="热门主题">
+            <h3 class="name">{{{title[1]}}}</h3>
+            <p class="desc">{{{content[1]}}}</p>
+          </a>
         </div>
         <div class="hot-left-b">
           <div class="hot-left-bl">
-            <img :src="img[2]" alt="热门主题">
-            <h3 class="name">{{{title[2]}}}</h3>
-            <p class="desc">{{{content[2]}}}</p>
+            <a :href="hotimg[2].n_pic">
+              <img :src="url+hotimg[2].s_pic" alt="热门主题">
+              <h3 class="name">{{{title[2]}}}</h3>
+              <p class="desc">{{{content[2]}}}</p>
+            </a>
           </div>
           <div class="hot-left-br">
-            <img :src="img[3]" alt="热门主题">
-            <h3 class="name">{{{title[3]}}}</h3>
-            <p class="desc">{{{content[3]}}}</p>
+            <a :href="hotimg[3].n_pic">
+              <img :src="url+hotimg[3].s_pic" alt="热门主题">
+              <h3 class="name">{{{title[3]}}}</h3>
+              <p class="desc">{{{content[3]}}}</p>
+            </a>
           </div>
         </div>
       </div>
@@ -42,16 +50,15 @@
     },
     data(){
       return {
-        img:[],
         title:[],
-        content:[]
+        content:[],
+        url:URL
       }
     },
     watch:{
       //值计算
       hotimg(){
         this.hotimg.forEach((data)=>{
-          this.img.push(URL+data.s_pic);
           this.title.push(this.escape2Html(data.name));
           this.content.push(this.escape2Html(data.iname))
         })
@@ -104,6 +111,7 @@
     border-bottom: 1px solid #e6e6e6;
     .hot-left-t{
       height:25.5vw;
+      box-sizing: border-box;
       position: relative;
       border-bottom: 1px solid #e6e6e6;
       img{
@@ -128,6 +136,7 @@
         position: absolute;
         height:100%;
         width: 100%;
+        background: #ffffff;
       }
     }
   }
