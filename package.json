@@ -9,6 +9,7 @@
     "build": "node build/build.js",
     "test": ""
   },
+  
   "dependencies": {
     "babel-runtime": "^6.0.0",
     "mint-ui": "^2.1.0",
