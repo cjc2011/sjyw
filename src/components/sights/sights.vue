@@ -13,7 +13,7 @@
             <div class="leav">
               <span class="text">景区等级: </span>
               <div class="rater-warpper">
-                <rater :value=3 star="A" disabled  :margin="-4" :font-size="16"></rater>
+                <rater :value=3 star="A" disabled  :margin="-2" :font-size="14"></rater>
               </div>
             </div>
             <ul class="project">
@@ -22,7 +22,7 @@
               </li>
             </ul>
             <div class="sell">
-              距离:{{sight.juli/10000}}
+              距离:<span>{{sight.juli/10000}}</span>
             </div>
           </div>
           <div class="text">{{sight.sights_intro}}</div>
@@ -110,17 +110,17 @@
         display: inline-block;
         position: relative;
         left: -6px;
-        font-size:0;
+        font-size:0px;
         vertical-align: middle;
         .text{
           display: inline-block;
           font-size:12px;
-          line-height: 1;
+          line-height: 14px;
           color: #666666;
         }
         .rater-warpper{
           display: inline-block;
-          margin-left: -10px;
+          margin-left: 0px;
         }
       }
       .project{
@@ -132,12 +132,14 @@
           padding:0px 6px;
           margin-right:8px;
           font-size:10px;
+          line-height: 14px;
           color: #ffffff;
           background: red;
           box-sizing: border-box;
           -webkit-border-radius:6px;
           -moz-border-radius:6px;
           border-radius:6px;
+          text-align: center;
         }
         .project-item:nth-child(1){
           background: #ba6ac6;
@@ -153,8 +155,12 @@
         float:right;
         margin-top: 4px;
         font-size: 12px;
+        line-height: 14px;
         color: #666666;
         text-align: right;
+        span{
+          font-size:12px;
+        }
       }
     }
     .text{

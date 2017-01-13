@@ -15,6 +15,9 @@
         </div>
       </div>
     </div>
+    <div class="citywarpper">
+      <selectcity></selectcity>
+    </div>
   </div>
 </template>
 
@@ -22,6 +25,7 @@
   import BScroll from 'better-scroll';
   import top from '../src/components/top/top.vue';
   import hot from '../src/components/hot/hot.vue';
+  import selectcity from '../src/components/selectcity/selectcity.vue';
   import sorts from '../src/components/sorts/sorts.vue';
   import swiper from '../node_modules/vux/src/components/swiper/swiper.vue';
   import sights from '../src/components/sights/sights.vue';
@@ -76,7 +80,8 @@
       "swiper": swiper,
       "sort":sorts,
       "hot":hot,
-      "sights":sights
+      "sights":sights,
+      "selectcity":selectcity
     }
   }
 
@@ -100,5 +105,13 @@
   .hotwrapper{
     margin:12px 0 5px 0;
   }
-
+  .citywarpper{
+    position: absolute;
+    top:0;
+    left:0;
+    bottom: 0;
+    width:100%;
+    background: #fff;
+    z-index:20;
+  }
 </style>
