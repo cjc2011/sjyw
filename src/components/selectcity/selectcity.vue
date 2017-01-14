@@ -29,23 +29,52 @@
 
 <script type="text/ecmascript-6">
   import { indexlist  } from '../../../node_modules/mint-ui'
-  const NAMES = ['Aaron', 'Alden', 'Austin', 'Baldwin', 'Braden', 'Carl', 'Chandler', 'Clyde', 'David', 'Edgar', 'Elton', 'Floyd', 'Freeman', 'Gavin', 'Hector', 'Henry', 'Ian', 'Jason', 'Joshua', 'Kane', 'Lambert', 'Matthew', 'Morgan', 'Neville', 'Oliver', 'Oscar', 'Perry', 'Quinn', 'Ramsey', 'Scott', 'Seth', 'Spencer', 'Timothy', 'Todd', 'Trevor', 'Udolf', 'Victor', 'Vincent', 'Walton', 'Willis', 'Xavier', 'Yvonne', 'Zack', 'Zane'];
+  import {PinYinTranslate} from '../../../src/commont/js/pinyin.js'
+
+
   export default {
     data() {
       return {
         alphabet: [],
         activeCity:'北京',
-        hotCity:['北京','河北']
+        hotCity:['北京','河北'],
+        citylist: []
       };
     },
     created() {
-      'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').forEach(initial => {
-        let cells = NAMES.filter(name => name[0] === initial);
-        this.alphabet.push({
-          initial,
-          cells
-        });
-      });
+      this.$http.get('/Api/area').then((response)=>{
+        let data = JSON.parse(response.body)
+        if(data.status === 200){
+          data = data.data.area
+          data.forEach((item)=>{
+            this.citylist.push(item.region_name)
+          });
+          this.cityindex.forEach((item)=>{
+            let cells = this.citylist.filter((initial)=>{
+              return PinYinTranslate.start(initial).substring(0,1) === item;
+            })
+            this.alphabet.push({
+              item,
+              cells
+            })
+          })
+        }
+      })
+    },
+    computed:{
+      cityindex(){
+        let indexar = [];
+        this.citylist.forEach((item)=>{
+          let pinyin = PinYinTranslate.start(item).substring(0,1)
+          if(indexar.indexOf(pinyin) != -1){
+            return
+          }
+          indexar.push(pinyin)
+        })
+        return indexar.sort((a,b)=>{
+          return a.charCodeAt()-b.charCodeAt()
+        })
+      }
     },
     components:{
       indexlist
@@ -58,6 +87,7 @@
   .nav{
     height: 40px;
     position: relative;
+    border-bottom:1px solid @color;
     span{
       position: absolute;
       top:10px;
