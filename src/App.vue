@@ -1,93 +1,143 @@
 <template>
   <div class="home">
-    <div class="top_wrapper" >
-      <top></top>
+
+    <div class="top_wrapper" ref="top" >
+      <top v-on:cityshow="showchange" :cityname="cityname"></top>
     </div>
-    <div class="home-content" ref="scroll">
-      <div>
-        <swiper auto :list="bannerlist" height="180px" loop></swiper>
-        <sort></sort>
-        <div class="hotwrapper">
-          <hot :hotimg="hotimg"></hot>
-        </div>
-        <div class="sights-wrapper">
-          <sights :sightdata="sightsdata" ></sights>
-        </div>
-      </div>
+    <div class="home-wrapper" ref="scroll">
+        <router-view v-on:change_sightinfo="change_sightinfo" :sightinfo="sightinfo_data" :home_data="home_data"></router-view>
     </div>
-    <div class="citywarpper">
-      <selectcity></selectcity>
+    <div class="citywarpper" v-show="cityselecshow">
+      <selectcity :cityname="cityname" v-on:select="setcity" v-on:hide="showchange"></selectcity>
     </div>
+    <div id="m"></div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import BScroll from 'better-scroll';
   import top from '../src/components/top/top.vue';
-  import hot from '../src/components/hot/hot.vue';
   import selectcity from '../src/components/selectcity/selectcity.vue';
-  import sorts from '../src/components/sorts/sorts.vue';
-  import swiper from '../node_modules/vux/src/components/swiper/swiper.vue';
-  import sights from '../src/components/sights/sights.vue';
-
+  import sightinfo from '../src/components/sightinfo/sightinfo.vue'
+  import BMap from 'BMap'
   const URL = 'http://www.bjsjyw.cn';
 
   export default {
     data(){
       return {
-        bannerlist: [],
-        hotimg:[],
-        sightsdata:[],
-        height:"180"
+        home_data: {},
+        cityname: "",
+        hotdata: [],
+        cityid: [],
+        citydata:[],
+        cityselecshow:false,
+        sightinfo_data: Object,
+        lng: null,
+        lat: null
       }
     },
     created(){
       let that = this;
-      this.$http.get('/Api/index', {
-        params: {
-          lat: 116.404,
-          lng: 39.915,
-          province: 2
-        }
-      }).then((response) => {
-        var response = JSON.parse(response.body);
-        //热门景点 农家乐hot
-        this.hotimg = response.data.djrd;
-        //热门景点
-        this.sightsdata = response.data.sights;
-        //添加轮播图
-        response.data.ads.forEach((img) => {
-          let obj = {};
-          obj.url = "javascript:;";
-          obj.img = URL + img.ads_pic;
-          this.bannerlist.push(obj)
-        })
-        this.$nextTick(() => {
-          if(!this.sroll){
-            this.scroll = new BScroll(this.$refs.scroll,{
-            })
-          }else{
-            this.scroll.refresh();
+      this.$nextTick(()=>{
+        //初始化加载一次数据
+        /*let ID = this.getCityId(this.cityname);
+        this.init(ID);*/
+        //实例化地图
+        var map = new BMap.Map("m");
+        //获取城市名
+        var myCity = new BMap.LocalCity();
+        myCity.get((result)=>{
+          var cityName = result.name;
+          this.cityname = cityName;
+        });
+        //获取经纬度
+        var geolocation = new BMap.Geolocation();
+        geolocation.getCurrentPosition(function(r){
+          if(this.getStatus() == BMAP_STATUS_SUCCESS){
+            var mk = new BMap.Marker(r.point);
+            map.addOverlay(mk);
+            map.panTo(r.point);
+            that.lng = r.point.lng;
+            that.lat = r.point.lat;
           }
-        })
+          else {
+            alert('failed'+this.getStatus());
+          }
+        },{enableHighAccuracy: true})
+      });
+      //获取已有的城市列表
+      this.$http.get('/Api/area').then((response)=>{
+        let data = JSON.parse(response.body).data;
+        this.citydata = data.area;
       })
     },
+    watch:{
+      lat () {
+        let ID = this.getCityId(this.cityname);
+        this.init(ID);
+      },
+      cityname() {
+        let ID = this.getCityId(this.cityname);
+        this.init(ID);
+      }
+    },
     methods: {
-
+      init(ID) {
+        this.$http.get('/Api/index', {
+          params: {
+            lat: this.lat,
+            lng: this.lng,
+            province: ID
+          }
+        }).then((response) => {
+          var response = JSON.parse(response.body);
+          if(response.data.djrd){
+            this.hotdata = response.data.djrd;
+          }else{
+            response.data.djrd = this.hotdata;
+          }
+          this.home_data = response.data
+          //this.init_scroll()
+        })
+      },
+      getCityId(str) {
+        let len = this.citydata.length;
+        for (let i=0;i<len;i++){
+          if(str == this.citydata[i].region_name){
+            return this.citydata[i].region_id;
+          }
+          let citys = this.citydata[i].city;
+          for (let j=0;j<citys.length;j++){
+            if(citys[j].region_name == str){
+              return citys[j].region_id;
+            }
+          }
+        }
+      },
+      change_sightinfo(data){
+        this.sightinfo_data = data;
+        //this.init_scroll()
+      },
+      //选择城市页面显示隐藏
+      showchange() {
+        this.cityselecshow = !this.cityselecshow;
+      },
+      //选择城市页面触发事件
+      setcity(active) {
+        this.cityname = active;
+      }
     },
     components: {
       "top": top,
-      "swiper": swiper,
-      "sort":sorts,
-      "hot":hot,
-      "sights":sights,
-      "selectcity":selectcity
+      "selectcity": selectcity,
+      "sightinfo": sightinfo
     }
   }
 
 </script>
 
 <style lang="less">
+  @import '../node_modules/vux/src/styles/reset.less';
   //@import '../node_modules/vux/src/styles/1px.less';
   .home{
     position: absolute;
@@ -95,12 +145,11 @@
     bottom: 0;
     width:100%;
   }
-  .home-content{
+  .home-wrapper{
     position: absolute;
     top:0;
     bottom: 0;
     width:100%;
-    overflow: hidden;
   }
   .hotwrapper{
     margin:12px 0 5px 0;
@@ -114,4 +163,5 @@
     background: #fff;
     z-index:20;
   }
+
 </style>

@@ -1,7 +1,7 @@
 <template>
   <header class="top">
     <div class="addrees" @click="cityshow">
-      <span class="text">北京</span>
+      <span class="text">{{cityname}}</span>
       <span class="icon iconfont icon-down icon-down"></span>
     </div>
     <div class="search-warpper">
@@ -14,9 +14,15 @@
 
 <script type="text/ecmascript-6">
   export default {
+    props :{
+      cityname: {
+        type: String
+      }
+    },
     methods:{
       cityshow(){
-
+        this.cityselecshow = !this.cityselecshow;
+        this.$emit('cityshow')
       }
     }
   }
@@ -45,10 +51,18 @@
     .addrees {
       font-size: 0;
       color: #ffffff;
+      max-width: 70px;
       .text {
+        display: inline-block;
+        max-width:50px;
         font-size: 15px;
+        text-overflow:ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        vertical-align:bottom;
       }
       .icon {
+        display: inline-block;
         font-size: 8px;
       }
 

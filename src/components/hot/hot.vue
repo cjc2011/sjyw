@@ -54,24 +54,28 @@
         url:URL
       }
     },
+    created(){
+      if(this.hotimg.length && !this.title.length){
+        this.init();
+      }
+    },
     watch:{
       //值计算
       hotimg(){
-        console.log(this.hotimg)
-        this.hotimg.forEach((data)=>{
-          this.title.push(this.escape2Html(data.name));
-          this.content.push(this.escape2Html(data.iname))
-        })
+        this.init();
       }
-    },
-    created(){
-
     },
     methods:{
       //html字符转义
       escape2Html(val){
         let arrEntities={'lt':'<','gt':'>','nbsp':' ','amp':'&','quot':'"'};
         return val.replace(/&(lt|gt|nbsp|amp|quot);/ig,function(all,t){return arrEntities[t];});
+      },
+      init() {
+        this.hotimg.forEach((data)=>{
+          this.title.push(this.escape2Html(data.name));
+          this.content.push(this.escape2Html(data.iname))
+        })
       }
     }
   }
