@@ -2,6 +2,7 @@ var path = require('path')
 var config = require('../config')
 var utils = require('./utils')
 var projectRoot = path.resolve(__dirname, '../')
+const vuxLoader = require('vux-loader')
 
 module.exports = {
   entry: {
@@ -11,6 +12,9 @@ module.exports = {
     path: config.build.assetsRoot,
     publicPath: process.env.NODE_ENV === 'production' ? config.build.assetsPublicPath : config.dev.assetsPublicPath,
     filename: '[name].js'
+  },
+  externals: {
+    'BMap': 'window.BMap'
   },
   resolve: {
     extensions: ['', '.js', '.vue'],
