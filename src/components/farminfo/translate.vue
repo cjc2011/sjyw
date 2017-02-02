@@ -1,6 +1,14 @@
 <template>
+<div class="famr_translate_wapper" style="position:absolute;top:0;bottom:0;width:100%;overflow:hidden;">
+  <popup v-model="show1">
+    <div class="popup2">
+      <group>
+      this is the second popup
+      </group>
+    </div>
+  </popup>
   <div class="famr_translate" ref="famr_translate">
-    <!--<div class="farm_scroll">
+    <div class="farm_scroll">
       <div class="farmop" v-if="farm_data.farm">
         <div class="sliderwarpper">
           <div class="swiper-container" ref="swiper">
@@ -40,7 +48,7 @@
           <span class="addres_details"></span>
         </div>
         <div class="farmdsc" v-if="farm_data.farm">
-          <h2 class="dightdsc_title">农家乐简介</h2>
+          <h2 class="dightdsc_title" @click="showpopup">农家乐简介</h2>
           <ul class="dscwapper" @click="dscshow" v-bind:class="{'dscshow':show}">
             <li v-for="dsc in farm_data.farm.farm_intro.split(' ')" class="dscitem">{{dsc}}</li>
           </ul>
@@ -48,30 +56,30 @@
         <div class="br farmbr"></div>
       </div>
       <div class="farm_package" v-if="farm_data.package && farm_data.package.length">
-      <h2 class="title">推荐套餐 ({{farm_data.package.length}})</h2>
-      <div class="package_content">
-        <ul class="package_list">
-          <li class="package_item" v-for="package in farm_data.package">
-            <h3 class="package_name">{{package.package_name}}</h3>
-            <div class="package_msg">
-              <div class="package_msg_left">
-                <div class="package_price">
-                  <strong class="now_price">¥{{package.package_tickets_d}}</strong>
-                  <del class="old_price">原价{{package.package_tickets_d * 1.5}}</del>
+        <h2 class="title">推荐套餐 ({{farm_data.package.length}})</h2>
+        <div class="package_content">
+          <ul class="package_list">
+            <li class="package_item" v-for="package in farm_data.package">
+              <h3 class="package_name">{{package.package_name}}</h3>
+              <div class="package_msg">
+                <div class="package_msg_left">
+                  <div class="package_price">
+                    <strong class="now_price">¥{{package.package_tickets_d}}</strong>
+                    <del class="old_price">原价{{package.package_tickets_d * 1.5}}</del>
+                  </div>
+                  <div class="package_info">套餐详情</div>
                 </div>
-                <div class="package_info">套餐详情</div>
+                <div class="package_msg_right">
+                  <button>预定</button>
+                </div>
               </div>
-              <div class="package_msg_right">
-                <button @click="showPopup">预定</button>
-              </div>
-            </div>
-          </li>
-        </ul>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
-    </div>-->
-
   </div>
+</div>
 </template>
 
 <script type="text/ecmascript-6">
@@ -100,13 +108,13 @@ import BScroll from 'better-scroll';
      farm_data() {
        this.farm_rank = Number(this.farm_data.farm.farm_star);
        this.$nextTick(()=>{
-         //this.init();
+         this.init();
        })
      }
    },
    methods: {
-     showPopup() {
-       this.show1 = !this.show1;
+     showpopup() {
+       this.show1 = true;
      },
      dscshow(){
        this.show = !this.show;
@@ -115,7 +123,7 @@ import BScroll from 'better-scroll';
        console.log(str)
      },
      init() {
-       let scroll = new BScroll(this.$refs.famr_translate,{
+       this.scroll = new BScroll(this.$refs.famr_translate,{
          click:true
        })
        let farmSwiper = new Swiper('.swiper-container',{

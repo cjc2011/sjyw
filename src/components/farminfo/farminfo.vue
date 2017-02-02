@@ -1,21 +1,13 @@
 <template>
   <div class="farminfo">
-    <!--<tab :line-width=2 active-color='#01bbd4' v-model="index">
+    <tab :line-width=2 active-color='#01bbd4' v-model="index">
       <tab-item class="vux-center" v-for="(item,index) in tab_list" @on-item-click="show(item,index)">{{item}}</tab-item>
-    </tab>-->
-    <h2 @click="showp" style="position:absolute;top:50px;z-index:90;">click</h2>
-    <!--<swiper v-model="index" height="100vh" :show-dots="false" animate:false>
+    </tab>
+    <swiper v-model="index" height="100vh" :show-dots="false" animate:false>
       <keep-alive>
         <swiper-item  ref="swiper" :is=currentView :farm_data="farm_data"></swiper-item>
       </keep-alive>
-    </swiper>-->
-    <popup v-model="show1">
-      <div class="popup0">
-        <group>
-          123456456
-        </group>
-      </div>
-    </popup>
+    </swiper>
   </div>
 </template>
 
@@ -28,8 +20,7 @@
   import dsc from './dsc.vue';
   import around  from './around.vue';
 
-  import popup from '../../../node_modules/vux/src/components/popup/index.vue';
-  import group from '../../../node_modules/vux/src/components/group/index.vue';
+
 
   export default {
     data() {
@@ -39,8 +30,7 @@
         index: 0,
         tab_title: '介绍',
         currentView: translate,
-        farm_data: {},
-        show1: false
+        farm_data: {}
       }
     },
     created() {
@@ -54,9 +44,6 @@
       })
     },
     methods: {
-      showp(){
-        this.show1 = !this.show1;
-      },
       show(item, index) {
         this.title = item;
         this.currentView = this.tab_content[index];
@@ -69,9 +56,7 @@
       SwiperItem,
       translate,
       dsc,
-      around,
-      popup,
-      group
+      around
     }
   }
 </script>
@@ -84,13 +69,13 @@
   left:0;
   bottom:0;
   width: 100%;
-  z-index: 20;
   .vux-tab{
     position: fixed;
     top: 0;
     left: 0;
     width: calc(~"100% - 120px");
     margin:0 60px;
+    z-index: 20;
   }
   .vux-tab .vux-tab-item{
     background: none;
