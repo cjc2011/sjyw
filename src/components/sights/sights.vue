@@ -50,10 +50,12 @@
         let arr = str.split(',').slice(0,2);
         return arr
       },
-      //首页点击景点列表 改变父组件的props参数
       singhtinfo(event,data){
         this.$router.push({ path: 'sightinfo', query: { id: data.id,juli: data.juli }});
       }
+    },
+    mounted() {
+      this.$emit('mounted')
     },
     components: {
       "rater": rater

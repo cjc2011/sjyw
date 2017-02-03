@@ -34,13 +34,16 @@
       }
     },
     created() {
+      let that = this;
       this.$http.get('/Api/farm_show', {
         params: {
           "id": this.$route.query.id
         }
       }).then((response) => {
         let data = response.body.data;
-        this.farm_data = data;
+        console.log(data)
+        that.farm_data = data;
+        console.log(that.farm_data)
       })
     },
     methods: {

@@ -1,30 +1,50 @@
 <template>
-  <div>around</div>
+  <div class="around_wapper" ref="around_wapper">
+    <div>
+      <sights :sightdata="farm_data.farm_sights" v-on:mounted="resetscroll"></sights>
+    </div>
+  </div>
 </template>
 
 <script type="text/ecmascript-6">
+import BScroll from 'better-scroll';
+import sights from '../../components/sights/sights.vue';
+
  export default {
-   farm_data: {
-     type: Object
+   props: {
+     farm_data: {
+       type: Object
+     }
    },
-   updated() {
-     console.log(this.farm_data)
-     console.log('updata')
+   data() {
+     return {
+       url: 'http://www.bjsjyw.cn'
+     }
    },
-   activeted() {
-     console.log(this.farm_data)
-     console.log('activeted')
+   created(){
+
    },
-   mounted() {
-     console.log(this.farm_data);
-     console.log('mounted')
+   methods: {
+     resetscroll() {
+       this.$nextTick(()=>{
+         console.log(this.$refs.around_wapper)
+         this.BS = new BScroll(this.$refs.around_wapper,{
+           click:true
+         })
+       })
+     }
    },
-   created() {
-     alert(1)
+   components: {
+     sights
    }
  }
 </script>
 
 <style lang="less">
-
+.around_wapper{
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+}
 </style>
