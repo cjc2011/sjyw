@@ -2,7 +2,7 @@
   <div class="farminfo">
     <div class="tab_wapper">
       <tab :line-width=2 active-color='#01bbd4' v-model="index">
-        <tab-item class="vux-center" v-for="(item,index) in tab_list" @on-item-click="show(item,index)">{{item}}</tab-item>
+        <tab-item  class="vux-center" v-for="(item,index) in tab_list" @on-item-click="show(item,index)">{{item}}</tab-item>
       </tab>
     </div>
     <swiper v-model="index" height="100%" :show-dots="false" animate:false>

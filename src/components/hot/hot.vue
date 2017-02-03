@@ -98,9 +98,7 @@
   background: #f7f6f6;
   position:relative;
   .hot-left{
-    border-top: 1px solid #e6e6e6;
     border-right: 1px solid #e6e6e6;
-    border-bottom: 1px solid #e6e6e6;
     flex:3.5;
     height:51vw;
     position:relative;
@@ -118,8 +116,6 @@
   .hot-right{
     flex:4;
     position: relative;
-    border-top: 1px solid #e6e6e6;
-    border-bottom: 1px solid #e6e6e6;
     .hot-left-t{
       position: absolute;
       top:0;

@@ -60,7 +60,7 @@
     },
     methods: {
       farminfo(item) {
-        this.$router.push({ path: 'farminfo', query: { id: item.id }});
+        this.$router.push({ path: 'farminfo', query: { id: item.id,juli: item.juli}});
       }
     },
     components: {

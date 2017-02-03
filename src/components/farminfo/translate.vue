@@ -1,20 +1,26 @@
 <template>
 <div class="famr_translate_wapper" style="position:absolute;top:0;bottom:0;width:100%;overflow:hidden;">
-  <popup v-model="show1" height=50%>
-    <div class="popup2">
-      <div class="package_text">
-        <h2 class="package_item_name">{{package_data.package_name}}</h2>
-        <h4 class="package_item_title">套餐说明</h4>
-        <ul>
-          <li>{{package_data.package_intro}}</li>
-        </ul>
-        <h4 class="package_item_title">套餐预定</h4>
-        <ul>
-          <li>{{package_data.package_ydxz}}</li>
-        </ul>
+  <popup v-model="show1" height=50% @on-show="resetscroll">
+    <div class="popup2" >
+      <h2 class="package_item_name">{{package_data.package_name}}</h2>
+      <div class="package_text" ref="package_text">
+        <div class="packagescroll">
+          <h4 class="package_item_title">套餐说明</h4>
+          <ul class="package_item_text">
+            <li v-for="item in dsc_info">
+              {{ item }}<span v-if="item.indexOf('。') < 0">。</span>
+            </li>
+          </ul>
+          <h4 class="package_item_title">套餐预定</h4>
+          <ul class="package_item_text" v-if="yd_info && yd_info.length">
+            <li v-for="item in yd_info">
+              {{item}}<span v-if="item.indexOf('。') < 0">。</span>
+            </li>
+          </ul>
+        </div>
       </div>
       <div class="salva_btn">
-        <div class="package_item_price">全额支付：¥{{package_data.deposit}} </div>
+        <div class="package_item_price">全额支付:¥{{package_data.deposit}} </div>
         <a class="salva_sure">预定</a>
       </div>
     </div>
@@ -43,12 +49,16 @@
             </div>
             <div class="farmDistant">
               <span class="text">当前距离:</span>
-              <span class="distant">{{ farm_data.farm.farm_distance}}km</span>
+              <span class="distant">{{ juli / 100}}km</span>
             </div>
             <div class="farmProject">
               <span class="text">游玩项目:</span>
               <span class="project" v-for="item in farm_data.farm.farm_program.split(',')">{{item}}</span>
             </div>
+          </div>
+          <div class="farmMsg_right">
+            <a class="farm_tel" href="tel:400-050-7706"><span></span></a>
+            <!--farm_data.farm.farm_tel-->
           </div>
         </div>
         <div class="farm_addres">
@@ -79,10 +89,10 @@
                     <strong class="now_price">¥{{package.package_tickets_d}}</strong>
                     <del class="old_price">原价{{package.package_tickets_d * 1.5}}</del>
                   </div>
-                  <div class="package_info">套餐详情</div>
+                  <div class="package_info" @click="showpopup(package)">套餐详情</div>
                 </div>
                 <div class="package_msg_right">
-                  <span class="yd" @click="showpopup(package)">预定</span>
+                  <span class="yd" >预定</span>
                 </div>
               </div>
             </li>
@@ -114,7 +124,10 @@ import BScroll from 'better-scroll';
        show: false,
        farm_rank:4,
        show1: false,
-       package_data:{}
+       package_data:{},
+       yd_info:[],
+       dsc_info:[],
+       juli:this.$route.query.juli
      }
    },
    created(){
@@ -136,11 +149,25 @@ import BScroll from 'better-scroll';
    },
    methods: {
      showpopup(data) {
+       this.yd_info = data.package_ydxz.split('\n').join('').split('；');
+       this.dsc_info = data.package_intro.split('\n').join('').split('；');
        this.package_data = data;
        this.show1 = true;
      },
+     resetscroll() {
+       this.$nextTick( ()=> {
+         if(!this.packagescroll){
+           this.packagescroll = new BScroll(this.$refs.package_text)
+         }else{
+           this.packagescroll.refresh();
+         }
+       })
+     },
      dscshow(){
        this.show = !this.show;
+       this.$nextTick(() => {
+         this.scroll.refresh();
+       })
      },
      init() {
        this.scroll = new BScroll(this.$refs.famr_translate,{
@@ -232,6 +259,7 @@ import BScroll from 'better-scroll';
         display: flex;
         flex-flow: row wrap;
         font-size: 0;
+        border-right:1px solid #999999;
         span {
           display: inline-block;
           line-height: 20px;
@@ -249,7 +277,7 @@ import BScroll from 'better-scroll';
           }
         }
         .farmDistant{
-          width: 35vw;
+          width: 30vw;
           .distant {
             font-size: 12px;
             color: #01bbd4;
@@ -262,13 +290,20 @@ import BScroll from 'better-scroll';
             color: #333333;
           }
         }
+        .farm_tel{
+          position: absolute;
+          top: 0;
+          right: 0;
+          width: 20px;
+          height: 20px;
+        }
       }
       .farmMsg_right {
-        width: 24vw;
+        width: 30vw;
         display: flex;
         align-items: center;
         justify-content: center;
-        .tel {
+        .farm_tel{
           display: flex;
           align-items: center;
           justify-content: center;
@@ -297,7 +332,6 @@ import BScroll from 'better-scroll';
         padding-bottom: 20px;
         max-height: 130px;
         overflow: hidden;
-        transition: 0.4s;
         background: #ffffff;
         &:before{
           content: ' ';
@@ -434,17 +468,66 @@ import BScroll from 'better-scroll';
     .popup2 {
       position: relative;
       height: 100%;
+      box-sizing: border-box;
+      .package_item_name{
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        padding: 0px 10px;
+        box-sizing: border-box;
+        box-shadow: 0 1px 4px rgba(238,136,0,.3);
+        font-size: 15px;
+        line-height: 30px;
+        color: #333;
+      }
       .package_text{
-        position: relative;
-        height: calc(~"100% - 50px");
+        position: absolute;
+        top: 30px;
+        bottom: 50px;
+        margin: 0px 10px;
         overflow: hidden;
+        .package_item_title{
+          padding: 5px 0;
+          font-size:14px;
+          font-weight: 600;
+          color: #ff6603;
+        }
+        .package_item_text{
+          font-size:12px;
+          line-height: 20px;
+          color: #666666;
+        }
       }
       .salva_btn {
         position: absolute;
         bottom: 0;
         left: 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 10px;
+        box-sizing: border-box;
         width: 100%;
         height: 50px;
+        font-size: 0;
+        box-shadow: 0 -1px 4px rgba(212,197,177,.3);
+        .package_item_price{
+          font-size: 16px;
+          color: #fd8f00;
+          font-weight: 600;
+        }
+        .salva_sure{
+          width: 70px;
+          height: 30px;
+          font-size: 14px;
+          text-align: center;
+          line-height: 30px;
+          color: #fff;
+          font-weight: 400;
+          background: #fd8f00;
+          border-radius: 6px;
+        }
       }
     }
   }
