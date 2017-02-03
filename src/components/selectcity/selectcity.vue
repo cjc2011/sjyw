@@ -65,7 +65,7 @@
     },
     created() {
       this.$http.get('/Api/area').then((response)=>{
-        let data = JSON.parse(response.body)
+        let data = response.body
         if(data.status === 200){
           data = data.data.area
           data.forEach((item)=>{

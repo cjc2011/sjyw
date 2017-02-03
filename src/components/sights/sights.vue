@@ -52,8 +52,9 @@
       },
       //首页点击景点列表 改变父组件的props参数
       singhtinfo(event,data){
+        console.log(data)
         this.$emit('singhtinfo',data);
-        this.$router.push('sightinfo');
+        this.$router.push({ path: 'sightinfo', query: { id: data.id,juli: data.juli }});
       }
     },
     components: {

@@ -5,7 +5,7 @@
       <top v-on:cityshow="showchange" :cityname="cityname"></top>
     </div>
     <div class="home-wrapper" ref="scroll">
-        <router-view v-on:change_sightinfo="change_sightinfo" :sightinfo="sightinfo_data" :home_data="home_data"></router-view>
+        <router-view  :home_data="home_data"></router-view>
     </div>
     <div class="citywarpper" v-show="cityselecshow">
       <selectcity :cityname="cityname" v-on:select="setcity" v-on:hide="showchange"></selectcity>
@@ -19,7 +19,7 @@
   import top from '../src/components/top/top.vue';
   import selectcity from '../src/components/selectcity/selectcity.vue';
   import sightinfo from '../src/components/sightinfo/sightinfo.vue'
-  import BMap from 'BMap'
+  import BMap from 'BMap';
   const URL = 'http://www.bjsjyw.cn';
 
   export default {
@@ -49,6 +49,7 @@
         myCity.get((result)=>{
           var cityName = result.name;
           this.cityname = cityName;
+
         });
         //获取经纬度
         var geolocation = new BMap.Geolocation();
@@ -59,16 +60,19 @@
             map.panTo(r.point);
             that.lng = r.point.lng;
             that.lat = r.point.lat;
+
           }
           else {
             alert('failed'+this.getStatus());
           }
         },{enableHighAccuracy: true})
       });
+
       //获取已有的城市列表
       this.$http.get('/Api/area').then((response)=>{
-        let data = JSON.parse(response.body).data;
+        let data = response.data.data;
         this.citydata = data.area;
+
       })
     },
     watch:{
@@ -90,7 +94,7 @@
             province: ID
           }
         }).then((response) => {
-          var response = JSON.parse(response.body);
+          var response = response.body;
           if(response.data.djrd){
             this.hotdata = response.data.djrd;
           }else{
@@ -113,10 +117,6 @@
             }
           }
         }
-      },
-      change_sightinfo(data){
-        this.sightinfo_data = data;
-        //this.init_scroll()
       },
       //选择城市页面显示隐藏
       showchange() {

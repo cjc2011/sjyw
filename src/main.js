@@ -9,11 +9,11 @@ import './commont/css/reset.css';
 import '../node_modules/vux/src/styles/reset.less'
 
 Vue.config.debug = true;
-
 Vue.use(VueRouter);
 Vue.use(VueResource);
 
 let routes = [
+  {path:'/',component: home},
   {path:'/sightinfo',component: sightinfo},
   {path:'/home',component: home},
   {path:'/farminfo',component: farminfo, meta: { requiresAuth: true }}
@@ -28,7 +28,5 @@ new Vue({
     "app": App
   },
   router: router
-}).$mount(App)
-
-router.push('home')
+}).$mount(App);
 

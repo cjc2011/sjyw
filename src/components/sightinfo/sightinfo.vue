@@ -30,7 +30,7 @@
           </div>
           <div class="sightDistant">
             <span class="text">当前距离:</span>
-            <span class="distant">{{sightinfo.juli / 1000}}km</span>
+            <span class="distant">{{juli / 1000}}km</span>
           </div>
           <div class="sightProject">
             <span class="text">游玩项目:</span>
@@ -59,7 +59,6 @@
   import rater from '../../../node_modules/vux/src/components/rater/'
   import farmlist from '../../components/farmlist/farmlist.vue'
 
-
   export  default {
     props: {
       sightinfo: {
@@ -73,16 +72,17 @@
         url: "http://www.bjsjyw.cn/",
         sight_rank: 0,
         show: false,
-        farmdata: []
+        farmdata: [],
+        juli: this.$route.query.juli
       }
     },
     created(){
       this.$http.get('/Api/sights_show', {
         params: {
-          id: this.sightinfo.id
+          id: this.$route.query.id
         }
       }).then( (response)=> {
-        this.sightdata = JSON.parse(response.body).data;
+        this.sightdata = response.body.data;
         this.farmdata = this.sightdata.sights_farm;
         this.sightdsc = this.sightdata.sights.sights_introduce.split("\n");
         this.sight_rank = Number(this.sightdata.sights.sights_rank);

@@ -1,12 +1,12 @@
 <template>
   <div class="farminfo">
-    <tab :line-width=2 active-color='#01bbd4' v-model="index">
-      <tab-item class="vux-center" v-for="(item,index) in tab_list" @on-item-click="show(item,index)">{{item}}</tab-item>
-    </tab>
-    <swiper v-model="index" height="100vh" :show-dots="false" animate:false>
-      <keep-alive>
+    <div class="tab_wapper">
+      <tab :line-width=2 active-color='#01bbd4' v-model="index">
+        <tab-item class="vux-center" v-for="(item,index) in tab_list" @on-item-click="show(item,index)">{{item}}</tab-item>
+      </tab>
+    </div>
+    <swiper v-model="index" height="100%" :show-dots="false" animate:false>
         <swiper-item  ref="swiper" :is=currentView :farm_data="farm_data"></swiper-item>
-      </keep-alive>
     </swiper>
   </div>
 </template>
@@ -39,7 +39,7 @@
           "id": this.$route.query.id
         }
       }).then((response) => {
-        let data = JSON.parse(response.body).data;
+        let data = response.body.data;
         this.farm_data = data;
       })
     },
@@ -69,22 +69,27 @@
   left:0;
   bottom:0;
   width: 100%;
-  .vux-tab{
+  .tab_wapper{
     position: fixed;
     top: 0;
     left: 0;
-    width: calc(~"100% - 120px");
-    margin:0 60px;
+    width: 100%;
     z-index: 20;
-  }
-  .vux-tab .vux-tab-item{
-    background: none;
+    background: #ffffff;
+    .vux-tab{
+      width: calc(~"100% - 120px");
+      margin:0 60px;
+    }
+    .vux-tab .vux-tab-item{
+      background: none;
+    }
   }
   .vux-slider{
+    position: absolute;
     top: 46px;
-    .vux-swiper{
-      height:calc(~"100vh - 46px") !important;
-    }
+    bottom: 0;
+    width: 100%;
+    overflow: hidden;
   }
 
 }

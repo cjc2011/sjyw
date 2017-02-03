@@ -1,10 +1,22 @@
 <template>
 <div class="famr_translate_wapper" style="position:absolute;top:0;bottom:0;width:100%;overflow:hidden;">
-  <popup v-model="show1">
+  <popup v-model="show1" height=50%>
     <div class="popup2">
-      <group>
-      this is the second popup
-      </group>
+      <div class="package_text">
+        <h2 class="package_item_name">{{package_data.package_name}}</h2>
+        <h4 class="package_item_title">套餐说明</h4>
+        <ul>
+          <li>{{package_data.package_intro}}</li>
+        </ul>
+        <h4 class="package_item_title">套餐预定</h4>
+        <ul>
+          <li>{{package_data.package_ydxz}}</li>
+        </ul>
+      </div>
+      <div class="salva_btn">
+        <div class="package_item_price">全额支付：¥{{package_data.deposit}} </div>
+        <a class="salva_sure">预定</a>
+      </div>
     </div>
   </popup>
   <div class="famr_translate" ref="famr_translate">
@@ -48,7 +60,7 @@
           <span class="addres_details"></span>
         </div>
         <div class="farmdsc" v-if="farm_data.farm">
-          <h2 class="dightdsc_title" @click="showpopup">农家乐简介</h2>
+          <h2 class="dightdsc_title">农家乐简介</h2>
           <ul class="dscwapper" @click="dscshow" v-bind:class="{'dscshow':show}">
             <li v-for="dsc in farm_data.farm.farm_intro.split(' ')" class="dscitem">{{dsc}}</li>
           </ul>
@@ -70,7 +82,7 @@
                   <div class="package_info">套餐详情</div>
                 </div>
                 <div class="package_msg_right">
-                  <button>预定</button>
+                  <span class="yd" @click="showpopup(package)">预定</span>
                 </div>
               </div>
             </li>
@@ -100,9 +112,19 @@ import BScroll from 'better-scroll';
      return {
        url: 'http://www.bjsjyw.cn/',
        show: false,
-       farm_rank:null,
-       show1: false
+       farm_rank:4,
+       show1: false,
+       package_data:{}
      }
+   },
+   created(){
+     if(!this.farm_data.farm){
+       return
+     }
+     this.farm_rank = Number(this.farm_data.farm.farm_star);
+     this.$nextTick(()=>{
+       this.init();
+     })
    },
    watch: {
      farm_data() {
@@ -113,18 +135,17 @@ import BScroll from 'better-scroll';
      }
    },
    methods: {
-     showpopup() {
+     showpopup(data) {
+       this.package_data = data;
        this.show1 = true;
      },
      dscshow(){
        this.show = !this.show;
      },
-     log(srt) {
-       console.log(str)
-     },
      init() {
        this.scroll = new BScroll(this.$refs.famr_translate,{
-         click:true
+         click:true,
+         bounce: false
        })
        let farmSwiper = new Swiper('.swiper-container',{
          loop: true,
@@ -382,7 +403,7 @@ import BScroll from 'better-scroll';
       }
       .package_info{
         display: inline-block;
-        font-size: 10px;
+        font-size: 12px;
         &:after{
           content: ' ';
           position: relative;
@@ -394,10 +415,13 @@ import BScroll from 'better-scroll';
           border-top: 5px solid #ffcc00;
         }
       }
-      button{
+      .yd{
+        display: inline-block;
         width: 60px;
         height: 34px;
         font-size: 14px;
+        line-height: 34px;
+        text-align: center;
         color: #ffffff;
         border:none;
         background: #ffcc00;
@@ -405,4 +429,27 @@ import BScroll from 'better-scroll';
       }
     }
   }
+  .vux-popup-dialog {
+    background: #ffffff !important;
+    .popup2 {
+      position: relative;
+      height: 100%;
+      .package_text{
+        position: relative;
+        height: calc(~"100% - 50px");
+        overflow: hidden;
+      }
+      .salva_btn {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 50px;
+      }
+    }
+  }
+
+
+
+
 </style>

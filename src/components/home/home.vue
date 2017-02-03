@@ -7,7 +7,7 @@
       <hot :hotimg="hotimg"></hot>
     </div>
     <div class="sights-wrapper">
-      <sights v-on:singhtinfo="change_sightinfo" :sightdata="sightsdata" ></sights>
+      <sights  :sightdata="sightsdata" ></sights>
     </div>
     </div>
   </div>
@@ -62,9 +62,6 @@ export  default {
       //热门景点
       this.sightsdata = this.home_data.sights;
       this.init_scroll();
-    },
-    change_sightinfo(data){
-      this.$emit('change_sightinfo',data);
     },
     init_scroll() {
       this.$nextTick( () => {
