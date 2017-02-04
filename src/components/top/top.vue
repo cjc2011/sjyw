@@ -1,14 +1,14 @@
 <template>
-  <header class="top">
-    <div class="addrees" @click="cityshow">
+  <header class="top" ref="top">
+    <div class="addrees" :class="{ green: green}" @click="cityshow">
       <span class="text">{{cityname}}</span>
-      <span class="icon iconfont icon-down icon-down"></span>
+      <span class="icon iconfont icon-down icon-down " :class="{ green: green}" ></span>
     </div>
-    <div class="search-warpper">
+    <div class="search-warpper" :class="{shadow:green}">
       <i class="icon weui_icon_search"></i>
       <input type="search" placeholder="假期去哪玩">
     </div>
-    <span class="icon iconfont icon-wo"></span>
+    <span class="icon iconfont icon-wo" :class="{ green: green}"></span>
   </header>
 </template>
 
@@ -19,10 +19,29 @@
         type: String
       }
     },
+    data() {
+      return {
+        green: false
+      }
+    },
+    mounted() {
+      window.addEventListener('scroll',this.handleScroll)
+    },
     methods:{
       cityshow(){
         this.cityselecshow = !this.cityselecshow;
         this.$emit('cityshow')
+      },
+      handleScroll() {
+        let opacity = (100 - document.body.scrollTop) /100 > 0 ? (100 - document.body.scrollTop) /100: 0 ;
+        opacity = (1-opacity).toFixed(2);
+        if(opacity > 0.2){
+          this.green = true;
+
+        }else{
+          this.green = false;
+        }
+        this.$refs.top.style.background = "rgba(255,255,255,"+opacity+")";
       }
     }
   }
@@ -34,6 +53,9 @@
   @import "../../commont/css/iconfont.css";
   @top_color:#85e1e1;
 
+  .green{
+    color: #85e1e1 !important;
+  }
   .top {
     position: fixed;
     left: 0px;
@@ -55,15 +77,16 @@
       .text {
         display: inline-block;
         max-width:50px;
-        font-size: 15px;
+        font-size: 14px;
         text-overflow:ellipsis;
         white-space: nowrap;
         overflow: hidden;
         vertical-align:bottom;
       }
       .icon {
+        margin-left: 2px;
         display: inline-block;
-        font-size: 8px;
+        font-size: 2px;
       }
 
     }
@@ -88,7 +111,6 @@
       .weui_icon_search:before {
         color: @top_color;
       }
-
       input {
         width: 100%;
         height: 100%;
@@ -104,6 +126,9 @@
       input::-webkit-input-placeholder {
         color: @top_color;
       }
+    }
+    .shadow{
+      box-shadow: 0px 0px 2px #e8e3e3;
     }
     .icon-wo {
       line-height: 1;

@@ -1,7 +1,7 @@
 <template>
   <div class="around_wapper" ref="around_wapper">
     <div>
-      <!--<sights :sightdata="farm_data.farm_sights" v-on:mounted="resetscroll"></sights>-->
+      <sights :sightdata="farm_data.farm_sights" v-on:mounted="resetscroll"></sights>
     </div>
   </div>
 </template>
@@ -46,5 +46,8 @@ import sights from '../../components/sights/sights.vue';
   bottom: 0;
   width: 100%;
   overflow: hidden;
+}
+.around_wapper .sights{
+  margin: 0;
 }
 </style>

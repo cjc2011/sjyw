@@ -1,6 +1,5 @@
 <template>
   <div class="sights">
-    <h1 class="title">当前城市热点景区</h1>
     <ul class="sights-list">
       <li class="sights-item" v-for="sight in sightdata" @click="singhtinfo($event,sight)" >
         <div class="sight-warpper">
@@ -13,7 +12,6 @@
             <div class="leav">
               <span class="text">景区等级:</span>
               <rater :value=3 star="A" disabled  :margin="-2" :font-size="12"></rater>
-
             </div>
             <ul class="project">
               <li class="project-item" v-for="pro in split(sight.sights_program)">

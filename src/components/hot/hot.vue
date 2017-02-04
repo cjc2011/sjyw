@@ -90,7 +90,6 @@
   font-size:14px;
   line-height: 20px;
   border-left: 8px solid #ffcc00;
-
 }
 .hot-content{
   display: flex;

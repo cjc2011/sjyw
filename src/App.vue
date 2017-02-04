@@ -1,11 +1,7 @@
 <template>
-  <div class="home">
-
-    <div class="top_wrapper" ref="top" >
-      <top v-on:cityshow="showchange" :cityname="cityname"></top>
-    </div>
-    <div class="home-wrapper" ref="scroll">
-        <router-view  :home_data="home_data"></router-view>
+  <div class="home" ref="scroll">
+    <div class="home-wrapper" >
+        <router-view :cityname="cityname" v-on:showchange="showchange" :home_data="home_data"></router-view>
     </div>
     <div class="citywarpper" v-show="cityselecshow">
       <selectcity :cityname="cityname" v-on:select="setcity" v-on:hide="showchange"></selectcity>
@@ -15,11 +11,10 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import BScroll from 'better-scroll';
-  import top from '../src/components/top/top.vue';
   import selectcity from '../src/components/selectcity/selectcity.vue';
   import sightinfo from '../src/components/sightinfo/sightinfo.vue'
   import BMap from 'BMap';
+
   const URL = 'http://www.bjsjyw.cn';
 
   export default {
@@ -101,7 +96,6 @@
             response.data.djrd = this.hotdata;
           }
           this.home_data = response.data
-          //this.init_scroll()
         })
       },
       getCityId(str) {
