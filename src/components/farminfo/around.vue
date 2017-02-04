@@ -1,7 +1,7 @@
 <template>
   <div class="around_wapper" ref="around_wapper">
     <div>
-      <sights :sightdata="farm_data.farm_sights" v-on:mounted="resetscroll"></sights>
+      <!--<sights :sightdata="farm_data.farm_sights" v-on:mounted="resetscroll"></sights>-->
     </div>
   </div>
 </template>
@@ -27,7 +27,6 @@ import sights from '../../components/sights/sights.vue';
    methods: {
      resetscroll() {
        this.$nextTick(()=>{
-         console.log(this.$refs.around_wapper)
          this.BS = new BScroll(this.$refs.around_wapper,{
            click:true
          })
@@ -44,7 +43,8 @@ import sights from '../../components/sights/sights.vue';
 .around_wapper{
   position: absolute;
   top: 0;
-  left: 0;
+  bottom: 0;
+  width: 100%;
   overflow: hidden;
 }
 </style>
