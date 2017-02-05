@@ -1,42 +1,44 @@
 <template>
-  <div class="cityselect">
-    <div class="page-indexlist">
-      <nav class="nav">
-        <span class="back" @click="hide"></span>
-        <h1>选择城市</h1>
-      </nav>
-      <div class="page-indexlist-wrapper">
-        <p class="city_title">当前定位</p>
-        <div class="active_city">
-          {{cityname}}
-          <span>GPS定位</span>
-        </div>
-        <p class="city_title">热门城市</p>
-        <div class="hot_city_warpper">
-          <ul class="hot_city_list">
-            <li class="hot_city" v-for="city in hotCity">{{city}}</li>
-          </ul>
-        </div>
-      </div>
-      <div class="indexlist" ref="indexlist">
-        <ul class="indexlist-content">
-          <li  v-for="item in city" class="indexsection">
-            <h2 class="indexsection-index">{{item.initial}}</h2>
-            <ul class="cityList">
-              <li v-for="city in item.cells" @click="select(city)">
-                <div class="item">{{city}}</div>
-              </li>
+  <div class="citywapper">
+    <div class="cityselect">
+      <div class="page-indexlist">
+        <nav class="nav">
+          <span class="back" @click="hide"></span>
+          <h1>选择城市</h1>
+        </nav>
+        <div class="page-indexlist-wrapper">
+          <p class="city_title">当前定位</p>
+          <div class="active_city">
+            {{cityname}}
+            <span>GPS定位</span>
+          </div>
+          <p class="city_title">热门城市</p>
+          <div class="hot_city_warpper">
+            <ul class="hot_city_list">
+              <li class="hot_city" v-for="city in hotCity">{{city}}</li>
             </ul>
-          </li>
-        </ul>
-        <div class="indexlist-nav">
-          <ul>
-            <li v-for="(item,index) in city" @click="move(index,item)">{{item.initial}}</li>
-          </ul>
+          </div>
         </div>
-        <toast v-model="show1" type="text" width="3.5em">{{text}}</toast>
+        <div class="indexlist" ref="indexlist">
+          <ul class="indexlist-content">
+            <li  v-for="item in city" class="indexsection">
+              <h2 class="indexsection-index">{{item.initial}}</h2>
+              <ul class="cityList">
+                <li v-for="city in item.cells" @click="select(city)">
+                  <div class="item">{{city}}</div>
+                </li>
+              </ul>
+            </li>
+          </ul>
+          <div class="indexlist-nav">
+            <ul>
+              <li v-for="(item,index) in city" @click="move(index,item)">{{item.initial}}</li>
+            </ul>
+          </div>
+          <toast v-model="show1" type="text" width="3.5em">{{text}}</toast>
+        </div>
+        <div id="map" ref="map"></div>
       </div>
-      <div id="map" ref="map"></div>
     </div>
   </div>
 </template>
@@ -101,7 +103,7 @@
     methods: {
       select(cell){
         this.$emit('select',cell)
-        this.$emit('hide')
+        this.$router.go(-1)
       },
       move(index,item){
         var heads = this.$refs.indexlist.getElementsByTagName('h2');
@@ -111,7 +113,7 @@
         this.show1 = true;
       },
       hide(){
-        this.$emit('hide')
+        this.$router.go(-1)
       }
     },
     components:{
@@ -122,6 +124,16 @@
 
 <style lang="less">
   @color:#01bbd4;
+
+  .citywarpper{
+    position: absolute;
+    top:0;
+    left:0;
+    bottom: 0;
+    width:100%;
+    background: #fff;
+    z-index:20;
+  }
   .page-indexlist{
     padding-top: 40px;
   }

@@ -1,10 +1,7 @@
 <template>
   <div class="home" ref="scroll">
     <div class="home-wrapper" >
-        <router-view :cityname="cityname" v-on:showchange="showchange" :home_data="home_data"></router-view>
-    </div>
-    <div class="citywarpper" v-show="cityselecshow">
-      <selectcity :cityname="cityname" v-on:select="setcity" v-on:hide="showchange"></selectcity>
+        <router-view v-on:hide="showchange" v-on:select="setcity" :cityname="cityname" v-on:showchange="showchange" :home_data="home_data"></router-view>
     </div>
     <div id="m"></div>
   </div>
@@ -67,7 +64,6 @@
       this.$http.get('/Api/area').then((response)=>{
         let data = response.data.data;
         this.citydata = data.area;
-
       })
     },
     watch:{
@@ -147,15 +143,6 @@
   }
   .hotwrapper{
     margin:12px 0 5px 0;
-  }
-  .citywarpper{
-    position: absolute;
-    top:0;
-    left:0;
-    bottom: 0;
-    width:100%;
-    background: #fff;
-    z-index:20;
   }
 
 </style>

@@ -5,6 +5,7 @@ import App from './App.vue';
 import sightinfo from '../src/components/sightinfo/sightinfo.vue';
 import farminfo from '../src/components/farminfo/farminfo.vue';
 import home from '../src/components/home/home.vue';
+import selectcity from '../src/components/selectcity/selectcity.vue';
 import './commont/css/reset.css';
 import '../node_modules/vux/src/styles/reset.less'
 
@@ -16,6 +17,7 @@ let routes = [
   {path:'/',component: home},
   {path:'/sightinfo',component: sightinfo},
   {path:'/home',component: home},
+  {path:'/selectcity',component:selectcity},
   {path:'/farminfo',component: farminfo, meta: { requiresAuth: true }}
 ];
 const router = new VueRouter({

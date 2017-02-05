@@ -6,7 +6,7 @@
           <div class="sight-top">
             <img class="sight-pic" width="100%" :src="url + sight.sights_pic" alt="sight.sights_name" title="sight.sights_name">
             <h1 class="name">{{sight.sights_name}}</h1>
-            <span class="icon iconfont icon-xin"></span>
+            <span class="icon iconfont icon-xin" @click.stop="coll"></span>
           </div>
           <div class="sight-content" >
             <div class="leav">
@@ -50,6 +50,9 @@
       },
       singhtinfo(event,data){
         this.$router.push({ path: 'sightinfo', query: { id: data.id,juli: data.juli }});
+      },
+      coll() {
+        alert("收藏")
       }
     },
     mounted() {

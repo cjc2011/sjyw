@@ -1,5 +1,5 @@
 <template>
-  <header class="top" ref="top">
+  <header class="top" :class="{ top_shadow: green}" ref="top">
     <div class="addrees" :class="{ green: green}" @click="cityshow">
       <span class="text">{{cityname}}</span>
       <span class="icon iconfont icon-down icon-down " :class="{ green: green}" ></span>
@@ -24,13 +24,17 @@
         green: false
       }
     },
+    //组件创建时 监听scroll事件 运动top组件的透明度
     mounted() {
       window.addEventListener('scroll',this.handleScroll)
     },
+    //组件创建时 监听scroll事件 运动top组件的透明度
+    beforeDestroy() {
+      window.removeEventListener('scroll',this.handleScroll)
+    },
     methods:{
       cityshow(){
-        this.cityselecshow = !this.cityselecshow;
-        this.$emit('cityshow')
+        this.$router.push('/selectcity')
       },
       handleScroll() {
         let opacity = (100 - document.body.scrollTop) /100 > 0 ? (100 - document.body.scrollTop) /100: 0 ;
@@ -56,6 +60,7 @@
   .green{
     color: #85e1e1 !important;
   }
+
   .top {
     position: fixed;
     left: 0px;
@@ -70,10 +75,16 @@
     padding: 0 15px;
     justify-content: space-between;
     z-index:10;
+    &.top_shadow{
+      box-shadow: 0 0 4px #999999;
+    }
     .addrees {
       font-size: 0;
       color: #ffffff;
       max-width: 70px;
+      @media only screen and (max-width: 320px){
+        max-width: 60px;
+      }
       .text {
         display: inline-block;
         max-width:50px;
@@ -82,11 +93,19 @@
         white-space: nowrap;
         overflow: hidden;
         vertical-align:bottom;
+        @media only screen and (max-width: 320px){
+          max-width: 40px;
+          font-size: 12px;
+        }
       }
       .icon {
         margin-left: 2px;
         display: inline-block;
-        font-size: 2px;
+        font-size: 8px;
+        line-height: 20px;
+        @media only screen and (max-width: 320px){
+          margin-left: 2px;
+        }
       }
 
     }
@@ -102,9 +121,12 @@
       -moz-border-radius: 15px;
       border-radius: 15px;
       padding: 0 30px;
+      @media only screen and (max-width: 320px){
+        width: 200px;
+      }
       .icon {
         position: absolute;
-        top: 6px;
+        top: 4px;
         left: 15px;
         line-height: 1;
       }
@@ -122,6 +144,9 @@
         outline: none;
         background: transparent;
         border: none;
+        @media only screen and (max-width: 320px){
+          font-size: 11px;
+        }
       }
       input::-webkit-input-placeholder {
         color: @top_color;

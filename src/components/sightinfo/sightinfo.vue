@@ -9,8 +9,8 @@
       <div class="sliderwarpper">
         <div class="swiper-container">
           <div class="swiper-wrapper"v-if="sightdata.sights">
-            <div class="swiper-slide"  v-for="swipe in sightdata.sights.sights_pic">
-              <img :src="url+swipe">
+            <div class="swiper-slide"  v-for="(swipe,index) in sightdata.sights.sights_pic">
+              <img :src="url+swipe" class="previewer-demo-img" @click="showpreviewer(index)">
             </div>
           </div>
           <!-- 分页器 -->
@@ -50,21 +50,18 @@
     <div class="farm_list_warpper">
       <farmlist :farmdata="farmdata"></farmlist>
     </div>
+    <previewer :list="list" ref="previewer" :options="options"></previewer>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import '../../commont/js/swiper-3.4.1.min';
-  import '../../commont/css/swiper-3.4.1.min.css'
-  import rater from '../../../node_modules/vux/src/components/rater/'
+  import '../../commont/css/swiper-3.4.1.min.css';
+  import rater from '../../../node_modules/vux/src/components/rater/';
+  import previewer from '../../../node_modules/vux/src/components/previewer/index.vue';
   import farmlist from '../../components/farmlist/farmlist.vue'
 
   export  default {
-    props: {
-      sightinfo: {
-        type: Object
-      }
-    },
     data(){
       return {
         sightdata: {},
@@ -73,7 +70,16 @@
         sight_rank: 0,
         show: false,
         farmdata: [],
-        juli: this.$route.query.juli
+        juli: this.$route.query.juli,
+        list:[],
+        options: {
+          getThumbBoundsFn (index) {
+            let thumbnail = document.querySelectorAll('.previewer-demo-img')[index]
+            let pageYScroll = window.pageYOffset || document.documentElement.scrollTop
+            let rect = thumbnail.getBoundingClientRect()
+            return {x: rect.left, y: rect.top + pageYScroll, w: rect.width}
+          }
+        }
       }
     },
     created(){
@@ -84,6 +90,11 @@
       }).then( (response)=> {
         this.sightdata = response.body.data;
         this.farmdata = this.sightdata.sights_farm;
+        this.list = this.sightdata.sights.sights_pic.map((item)=>{
+          let obj = {w:600,h:400};
+          obj.src = this.url+item;
+          return obj
+        })
         this.sightdsc = this.sightdata.sights.sights_introduce.split("\n");
         this.sight_rank = Number(this.sightdata.sights.sights_rank);
         this.$nextTick( ()=> {
@@ -99,6 +110,9 @@
       })
     },
     methods:{
+      showpreviewer (index) {
+        this.$refs.previewer.show(index)
+      },
       dscshow() {
         this.show = !this.show;
       },
@@ -108,7 +122,8 @@
     },
     components: {
       "rater": rater,
-      "farmlist": farmlist
+      "farmlist": farmlist,
+      "previewer":previewer
     }
   }
 </script>
@@ -214,14 +229,14 @@
           vertical-align: top;
         }
         .sightGrade{
-          width: 34vw;
+          width: 40vw;
           .gradewarpper {
             display: inline-block;
             line-height: 20px;
           }
         }
         .sightDistant{
-          width: 35vw;
+          width: 40vw;
           .distant {
             font-size: 12px;
             color: #01bbd4;

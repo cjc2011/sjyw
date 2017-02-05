@@ -7,7 +7,7 @@
           <!--<router-link to="/farminfo">-->
             <div class="farm_top">
               <img class="farm_img" :src="url+item.farm_pic" >
-              <span class="farm_coll"></span>
+              <span class="farm_coll icon iconfont icon-xin" @click.stop="coll"></span>
               <div class="farm_sell">
                 <span class="now_price">¥{{item.farm_tickets || 0}}</span>
                 <del class="old_price">原{{item.farm_tickets * 1.5}}</del>
@@ -61,6 +61,9 @@
     methods: {
       farminfo(item) {
         this.$router.push({ path: 'farminfo', query: { id: item.id,juli: item.juli}});
+      },
+      coll() {
+        alert("收藏")
       }
     },
     components: {
@@ -90,6 +93,18 @@
           display: block;
           width:100%;
           height:100%;
+        }
+        .farm_coll{
+          position: absolute;
+          right: 25px;
+          top: 0px;
+          width: 30px;
+          height: 44px;
+          line-height: 44px;
+          text-align: center;
+          font-size: 20px;
+          color: #ffffff;
+          background: #01bbd4;
         }
         .farm_name{
           position: absolute;

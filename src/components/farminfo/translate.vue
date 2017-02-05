@@ -1,38 +1,13 @@
 <template>
 <div class="famr_translate_wapper" style="position:absolute;top:0;bottom:0;width:100%;overflow:hidden;">
-  <popup v-model="show1" height=50% @on-show="resetscroll">
-    <div class="popup2" >
-      <h2 class="package_item_name">{{package_data.package_name}}</h2>
-      <div class="package_text" ref="package_text">
-        <div class="packagescroll">
-          <h4 class="package_item_title">套餐说明</h4>
-          <ul class="package_item_text">
-            <li v-for="item in dsc_info">
-              {{ item }}<span v-if="item.indexOf('。') < 0">。</span>
-            </li>
-          </ul>
-          <h4 class="package_item_title">套餐预定</h4>
-          <ul class="package_item_text" v-if="yd_info && yd_info.length">
-            <li v-for="item in yd_info">
-              {{item}}<span v-if="item.indexOf('。') < 0">。</span>
-            </li>
-          </ul>
-        </div>
-      </div>
-      <div class="salva_btn">
-        <div class="package_item_price">全额支付:¥{{package_data.deposit}} </div>
-        <a class="salva_sure">预定</a>
-      </div>
-    </div>
-  </popup>
   <div class="famr_translate" ref="famr_translate">
     <div class="farm_scroll">
       <div class="farmop" v-if="farm_data.farm">
         <div class="sliderwarpper">
           <div class="swiper-container" ref="swiper">
             <div class="swiper-wrapper">
-              <div class="swiper-slide"  v-for="swipe in farm_data.farm.farm_pic">
-                <img :src="url+swipe">
+              <div class="swiper-slide"  v-for="(swipe,index) in farm_data.farm.farm_pic">
+                <img class="previewer-demo-img" :src="url+swipe" @click="showpreviewer(index)">
               </div>
             </div>
             <div class="swiper-pagination"></div>
@@ -75,7 +50,7 @@
             <li v-for="dsc in farm_data.farm.farm_intro.split(' ')" class="dscitem">{{dsc}}</li>
           </ul>
         </div>
-        <div class="br farmbr"></div>
+        <div class="br farmbr" v-if="farm_data.package && farm_data.package.length"></div>
       </div>
       <div class="farm_package" v-if="farm_data.package && farm_data.package.length">
         <h2 class="title">推荐套餐 ({{farm_data.package.length}})</h2>
@@ -92,7 +67,7 @@
                   <div class="package_info" @click="showpopup(package)">套餐详情</div>
                 </div>
                 <div class="package_msg_right">
-                  <span class="yd" >预定</span>
+                  <span class="yd" @click="datashow">预定</span>
                 </div>
               </div>
             </li>
@@ -101,6 +76,43 @@
       </div>
     </div>
   </div>
+  <popup v-model="show1" height=50% @on-show="resetscroll">
+    <div class="popup2" >
+      <h2 class="package_item_name">{{package_data.package_name}}</h2>
+      <div class="package_text" ref="package_text">
+        <div class="packagescroll">
+          <h4 class="package_item_title">套餐说明</h4>
+          <ul class="package_item_text">
+            <li v-for="item in dsc_info">
+              {{ item }}<span v-if="item.indexOf('。') < 0">。</span>
+            </li>
+          </ul>
+          <h4 class="package_item_title">套餐预定</h4>
+          <ul class="package_item_text" v-if="yd_info && yd_info.length">
+            <li v-for="item in yd_info">
+              {{item}}<span v-if="item.indexOf('。') < 0">。</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="salva_btn">
+        <div class="package_item_price">全额支付:¥{{package_data.deposit}} </div>
+        <a class="salva_sure">预定</a>
+      </div>
+    </div>
+  </popup>
+  <popup v-model="data_show" >
+    <div class="popup3" >
+      <inline-calendar
+        class="inline-calendar-demo"
+        :start-date="star"
+        :end-date="end"
+        :weeks-list="['日','一','二','三','四','五','六']"
+        :render-function="buildSlotFn">
+      </inline-calendar>
+    </div>
+  </popup>
+  <previewer :list="list" ref="previewer" :options="options"></previewer>
 </div>
 </template>
 
@@ -110,8 +122,13 @@ import '../../commont/css/swiper-3.4.1.min.css';
 import rater from '../../../node_modules/vux/src/components/rater/'
 import popup from '../../../node_modules/vux/src/components/popup/index.vue';
 import group from '../../../node_modules/vux/src/components/group/index.vue';
+import previewer from '../../../node_modules/vux/src/components/previewer/index.vue';
+import InlineCalendar from '../../../node_modules/vux/src/components/inline-calendar/index.vue';
 import BScroll from 'better-scroll';
 
+let d = new Date();
+let nowday = d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();
+let nextday = d.getFullYear()+"-"+(d.getMonth()+2)+"-"+d.getDate();
  export default {
    props: {
      farm_data: {
@@ -122,12 +139,29 @@ import BScroll from 'better-scroll';
      return {
        url: 'http://www.bjsjyw.cn/',
        show: false,
+       data_show:false,
        farm_rank:4,
        show1: false,
        package_data:{},
        yd_info:[],
        dsc_info:[],
-       juli:this.$route.query.juli
+       juli:this.$route.query.juli,
+       star:nowday,
+       end: nextday,
+       changeWeeksList: false,
+       useCustomFn: false,
+       buildSlotFn: (line, index, data) => {
+         return  '<div style="font-size:8px;text-align:center;line-height:12px;"><span style="display:inline-block;color:#666666">¥140</span></div>'
+       },
+       list: [],
+       options: {
+         getThumbBoundsFn (index) {
+           let thumbnail = document.querySelectorAll('.previewer-demo-img')[index]
+           let pageYScroll = window.pageYOffset || document.documentElement.scrollTop
+           let rect = thumbnail.getBoundingClientRect()
+           return {x: rect.left, y: rect.top + pageYScroll, w: rect.width}
+         }
+       }
      }
    },
    created(){
@@ -148,11 +182,17 @@ import BScroll from 'better-scroll';
      }
    },
    methods: {
+     showpreviewer (index) {
+       this.$refs.previewer.show(index)
+     },
      showpopup(data) {
        this.yd_info = data.package_ydxz.split('\n').join('').split('；');
        this.dsc_info = data.package_intro.split('\n').join('').split('；');
        this.package_data = data;
        this.show1 = true;
+     },
+     datashow() {
+       this.data_show = true;
      },
      resetscroll() {
        this.$nextTick( ()=> {
@@ -170,10 +210,15 @@ import BScroll from 'better-scroll';
        })
      },
      init() {
+       this.list =  this.farm_data.farm.farm_pic.map((item)=>{
+         let obj = {w:600,h:400};
+         obj.src = this.url+item;
+         return obj
+       });
        this.scroll = new BScroll(this.$refs.famr_translate,{
          click:true,
          bounce: false
-       })
+       });
        let farmSwiper = new Swiper('.swiper-container',{
          loop: true,
          pagination: '.swiper-pagination',     // 分页器
@@ -187,16 +232,18 @@ import BScroll from 'better-scroll';
    components: {
      rater,
      popup,
-     group
+     group,
+     InlineCalendar,
+     previewer
    }
  }
 </script>
 
 <style lang="less">
   //轮播图
-  .popup0 {
-    padding-bottom:15px;
-    height:200px;
+
+  .popup3{
+    padding: 20px 0px;
   }
   .br{
     height:7px;
@@ -271,6 +318,9 @@ import BScroll from 'better-scroll';
         }
         .farmGrade{
           width: 34vw;
+          @media only screen and (max-width: 320px){
+           width: 40vw;
+          }
           .gradewarpper {
             display: inline-block;
             line-height: 20px;
@@ -278,6 +328,9 @@ import BScroll from 'better-scroll';
         }
         .farmDistant{
           width: 30vw;
+          @media only screen and (max-width: 320px){
+            width: 35vw;
+          }
           .distant {
             font-size: 12px;
             color: #01bbd4;
@@ -299,7 +352,7 @@ import BScroll from 'better-scroll';
         }
       }
       .farmMsg_right {
-        width: 30vw;
+        width: 31vw;
         display: flex;
         align-items: center;
         justify-content: center;
