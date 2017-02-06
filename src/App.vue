@@ -1,7 +1,9 @@
 <template>
   <div class="home" ref="scroll">
     <div class="home-wrapper" >
-        <router-view v-on:hide="showchange" v-on:select="setcity" :cityname="cityname" v-on:showchange="showchange" :home_data="home_data"></router-view>
+      <transition :name="$router.app.pageTransition">
+        <router-view   v-on:hide="showchange" v-on:select="setcity" :cityname="cityname" v-on:showchange="showchange" :home_data="home_data"></router-view>
+      </transition>
     </div>
     <div id="m"></div>
   </div>
@@ -25,7 +27,8 @@
         cityselecshow:false,
         sightinfo_data: Object,
         lng: null,
-        lat: null
+        lat: null,
+        transitionName: 'slide-left'
       }
     },
     created(){
@@ -129,6 +132,69 @@
 <style lang="less">
   @import '../node_modules/vux/src/styles/reset.less';
   //@import '../node_modules/vux/src/styles/1px.less';
+  /*right start*/
+  .slide-right-enter-active {
+    transition: all .4s ease;
+  }
+
+  .slide-right-enter {
+    opacity: 0.9;
+    transform: translate3d(100%, 0, 0);
+    -webkit-transform: translate3d(100%, 0, 0);
+  }
+
+  .slide-right-leave {
+    transform: translate3d(0, 0, 0);
+    -webkit-transform: translate3d(0, 0, 0);
+  }
+
+  .slide-right-leave-active {
+    transition: all .4s ease;
+    opacity: .5;
+    transform: translate3d(-20%, 0, 0);
+    -webkit-transform: translate3d(-20%, 0, 0);
+  }
+  /*right end*/
+  /*left start*/
+  .ms-page.slide-left-enter-active {
+    transition: all .4s ease;
+    transform: translate3d(0%, 0, 0);
+    -webkit-transform: translate3d(0%, 0, 0);
+    z-index: 1998;
+  }
+
+  .ms-page.slide-left-enter {
+    opacity: .5;
+    transform: translate3d(-20%, 0, 0);
+    -webkit-transform: translate3d(-20%, 0, 0);
+    z-index: 1998;
+  }
+
+  .ms-page.slide-left-leave {
+    transform: translate3d(0, 0, 0);
+    -webkit-transform: translate3d(0, 0, 0);
+  }
+
+  .ms-page.slide-left-leave-active {
+    transition: all .4s ease;
+    opacity: 0.9;
+    transform: translate3d(100%, 0, 0);
+    -webkit-transform: translate3d(100%, 0, 0);
+  }
+  /*left end*/
+  .slide-fade-enter-active {
+    transition: all .4s ease;
+  }
+
+  .slide-fade-leave-active {
+    transition: all .4s ease;
+  }
+
+  .slide-fade-enter,
+  .slide-fade-leave-active {
+    padding-left: 10px;
+    opacity: 0;
+  }
   .home{
     position: absolute;
     top:0;

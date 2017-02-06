@@ -6,6 +6,8 @@ import sightinfo from '../src/components/sightinfo/sightinfo.vue';
 import farminfo from '../src/components/farminfo/farminfo.vue';
 import home from '../src/components/home/home.vue';
 import selectcity from '../src/components/selectcity/selectcity.vue';
+import teamcustom from '../src/components/teamcustom/teamcustom.vue';
+import searchlist from '../src/components/searchlist/searchlist.vue';
 import './commont/css/reset.css';
 import '../node_modules/vux/src/styles/reset.less'
 
@@ -15,14 +17,17 @@ Vue.use(VueResource);
 
 let routes = [
   {path:'/',component: home},
-  {path:'/sightinfo',component: sightinfo},
   {path:'/home',component: home},
+  {path:'/sightinfo',component: sightinfo},
+  {path:'/farminfo',component: farminfo, meta: { requiresAuth: true }},
   {path:'/selectcity',component:selectcity},
-  {path:'/farminfo',component: farminfo, meta: { requiresAuth: true }}
+  {path:'/teamcustom',component:teamcustom},
+  {path:'/searchlist',component: searchlist},
 ];
 const router = new VueRouter({
   routes
 });
+
 /* eslint-disable no-new */
 new Vue({
   el: '#root',
