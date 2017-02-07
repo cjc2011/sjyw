@@ -2,7 +2,7 @@
   <div class="home" ref="scroll">
     <div class="home-wrapper" >
       <transition :name="$router.app.pageTransition">
-        <router-view   v-on:hide="showchange" v-on:select="setcity" :cityname="cityname" v-on:showchange="showchange" :home_data="home_data"></router-view>
+        <router-view   v-on:hide="showchange" v-on:select="setcity" :citydata="citydata" :cityname="cityname" v-on:showchange="showchange" :home_data="home_data"></router-view>
       </transition>
     </div>
     <div id="m"></div>

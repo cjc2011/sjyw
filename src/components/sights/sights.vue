@@ -43,6 +43,11 @@
         url:'http://www.bjsjyw.cn/'
       }
     },
+    watch: {
+      sightdata() {
+        console.log(this.sightdata)
+      }
+    },
     methods: {
       split(str){
         let arr = str.split(',').slice(0,2);
