@@ -19,7 +19,7 @@
               </li>
             </ul>
             <div class="sell">
-              距离:<span>{{sight.juli/1000}}km</span>
+              距离:<span>{{sight.sights_distance}}km</span>
             </div>
           </div>
           <div class="text">{{sight.sights_intro}}</div>
@@ -43,18 +43,15 @@
         url:'http://www.bjsjyw.cn/'
       }
     },
-    watch: {
-      sightdata() {
-        console.log(this.sightdata)
-      }
-    },
     methods: {
       split(str){
         let arr = str.split(',').slice(0,2);
         return arr
       },
       singhtinfo(event,data){
-        this.$router.push({ path: 'sightinfo', query: { id: data.id,juli: data.juli }});
+        console.log(null/1000)
+        let distance = data.juli/1000 || data.sights_distance;
+        this.$router.push({ path: 'sightinfo', query: { id: data.id,juli: distance }});
       },
       coll() {
         alert("收藏")

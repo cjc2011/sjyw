@@ -23,16 +23,25 @@
         <div class="drop_box">
           <div class="overall_box box" :class="{'active':active===1}">
             <ul>
-              <li>综合排序</li>
-              <li>距离排序</li>
-              <li>推荐排序</li>
+              <li class="vux-1px-b border" :class="{'active':overall === 0}" @click="overallshow(0)">
+                <span>综合排序</span>
+                <icon type="success_no_circle"></icon>
+              </li>
+              <li class="vux-1px-b border" :class="{'active':overall === 1}" @click="overallshow(1)">
+                <span>距离排序</span>
+                <icon type="success_no_circle"></icon>
+              </li>
+              <li :class="{'active':overall === 2}" @click="overallshow(2)">
+                <span>推荐排序</span>
+                <icon type="success_no_circle"></icon>
+              </li>
             </ul>
           </div>
           <div class="play_box box" :class="{'active':active===2}">
             <scroller lock-x height="180px" ref="scroller" >
               <div class="scrollwapper">
                 <ul>
-                  <li class="play_box_item" v-for="(item,index) in playdata">
+                  <li class="play_box_item" v-for="(item,index) in playdata" :class="{'active':playactive === index}" @click="playitem(index)">
                     <span class="play_box_text">{{item}}</span>
                   </li>
                 </ul>
@@ -42,7 +51,7 @@
           <div class="area_box box" :class="{'active':active===3}" v-if="index_city">
             <h2 class="index_city">{{cityname}}</h2>
             <ul>
-              <li class="area_item" v-for="item in index_city.city">
+              <li class="area_item" v-for="item in index_city.city" :classs="{'active':item.region_id}" @click="cityactive(item.region_id)">
                 <span class="area_item_text">{{item.region_name}}</span>
               </li>
             </ul>
@@ -59,6 +68,7 @@
 <script type="text/ecmascript-6">
   import scroller from '../../../node_modules/vux/src/components/scroller/index.vue';
   import sights from '../../components/sights/sights.vue';
+  import icon from '../../../node_modules/vux/src/components/icon/index.vue'
   export default {
     props:{
       cityname:{
@@ -71,7 +81,9 @@
     data() {
       return {
         playdata:['用餐','住宿','会务','K歌','骑马','漂流','蹦极','竹筏','登山','野营','采摘','烧烤','骑行','摄影','垂钓','庙宇','道观','游乐场','烤全羊','水上游船','真人CS','麻将','台球','乒乓球','温泉','儿童乐园','动物园','耕种体验','滑雪','攀岩','参观','玻璃栈道','休闲','高尔夫','品茶'],
-        active:0,
+        active:0,               //选项卡参数
+        overall:null,           //综合排序 active参数
+        playactive:null,        //游玩项目选中active 参数
         sightdata:null,
         opation:{
           page:0,
@@ -84,15 +96,18 @@
         }
       }
     },
-    watch:{
-      opation(){
-        console.log('change')
-      }
+    created() {
+      let that = this;
+      window.addEventListener('scroll',function(){
+        if(that.active != 0){
+          that.active = 0;
+        }
+      })
     },
     computed: {
       index_city(){
         let data = this.citydata.filter((item)=>{
-          return (item.region_name === this.cityname)
+          return (item.region_name === this.cityname);
         })
         if(!data.length){
           return
@@ -105,6 +120,24 @@
       }
     },
     methods: {
+      //排序方式
+      overallshow(index) {
+        this.overall = index;
+        this.opation.sort = index;
+        this.getdata();
+      },
+      //选择游玩项目
+      playitem(index){
+        this.playactive = index;
+        this.opation.program = index;
+        this.getdata();
+      },
+      //选择城市
+      cityactive(cityid) {
+        this.playactive = cityid;
+        this.opation.city = cityid;
+        this.getdata();
+      },
       getdata(){
         this.$http.get('Api/sights_list',{
           params: {
@@ -117,8 +150,11 @@
             sort:this.opation.sort
           }
         }).then((response)=>{
-          console.log(response.body.data.list)
-          this.sightdata=response.body.data.list;
+          if(response.body.status === 200){
+            this.sightdata=response.body.data.list;
+          }else{
+            alert('暂无数据')
+          }
         })
       },
       back() {
@@ -139,20 +175,22 @@
     },
     components: {
       scroller,
-      sights
+      sights,
+      icon
     }
   }
 </script>
 
 <style lang="less">
+  @import '../../../node_modules/vux/src/styles/1px.less';
   .searchlist_warpper{
     .searchlist_top{
       position: fixed;
       width: 100%;
       height: 40px;
-      border-bottom: 1px solid rgba(1, 187, 212, 0.4);
       box-sizing: border-box;
       background: #ffffff;
+      z-index:10;
       h1{
         font-weight: 400;
         font-size: 16px;
@@ -187,7 +225,6 @@
         .screen{
           display: flex;
           flex-flow: row nowrap;
-          -border-bottom: 1px solid #bbf0f7;
           .screen-item{
             flex: 1;
             text-align: center;
@@ -213,7 +250,7 @@
                 width: 8px;
                 height: 8px;
                 transform: rotate(45deg);
-                box-shadow: 1px 1px 1px  #ccc;
+                box-shadow: 1px 1px 1px  #333;
               }
             }
           }
@@ -222,11 +259,36 @@
           position: absolute;
           top: 40px;
           width: 100%;
-          padding: 10px;
           box-sizing: border-box;
           box-shadow: 0 -1px 1px #cccccc;
+          background: #ffffff;
+          z-index:10;
           .box{
             display: none;
+            background: #ffffff;
+            margin: 10px;
+          }
+          .overall_box{
+            font-size:0;
+            li{
+              display: flex;
+              justify-content: space-between;
+              font-size: 14px;
+              line-height: 40px;
+              i{
+                display: none;
+                font-size: 8px;
+              }
+              &.active i{
+                display: block;
+              }
+              &.active span{
+                color: #01bbd4;
+              }
+            }
+            .border{
+              background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.5, rgb(233, 252, 255)));
+            }
           }
           .play_box{
             font-size: 0;
@@ -235,6 +297,10 @@
               width: 25%;
               margin-bottom: 6px;
               text-align: center;
+              &.active .play_box_text{
+                border:1px solid #01bbd4;
+                color: #01bbd4;
+              }
               .play_box_text{
                 display: inline-block;
                 width: 90%;
@@ -248,7 +314,6 @@
           }
           .area_box{
             font-size:0;
-            width: 100%;
             .index_city{
               padding-bottom: 10px;
               padding-left: 4px;
@@ -281,6 +346,11 @@
           }
         }
 
+      }
+      .showlist{
+        .sights{
+          margin-top: 0;
+        }
       }
     }
   }

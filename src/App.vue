@@ -34,9 +34,6 @@
     created(){
       let that = this;
       this.$nextTick(()=>{
-        //初始化加载一次数据
-        /*let ID = this.getCityId(this.cityname);
-        this.init(ID);*/
         //实例化地图
         var map = new BMap.Map("m");
         //获取城市名
@@ -44,7 +41,6 @@
         myCity.get((result)=>{
           var cityName = result.name;
           this.cityname = cityName;
-
         });
         //获取经纬度
         var geolocation = new BMap.Geolocation();
@@ -55,7 +51,7 @@
             map.panTo(r.point);
             that.lng = r.point.lng;
             that.lat = r.point.lat;
-
+            //console.log('经度:'+that.lng,'纬度：'+that.lat,)
           }
           else {
             alert('failed'+this.getStatus());

@@ -30,7 +30,7 @@
           </div>
           <div class="sightDistant">
             <span class="text">当前距离:</span>
-            <span class="distant">{{juli / 1000}}km</span>
+            <span class="distant">{{juli}}km</span>
           </div>
           <div class="sightProject">
             <span class="text">游玩项目:</span>
