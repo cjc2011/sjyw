@@ -48,6 +48,7 @@
       <div class="br sightbr"></div>
     </div>
     <div class="farm_list_warpper">
+      <h1 class="farm_title">附近农家乐</h1>
       <farmlist :farmdata="farmdata"></farmlist>
     </div>
     <previewer :list="list" ref="previewer" :options="options"></previewer>

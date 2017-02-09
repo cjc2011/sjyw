@@ -24,7 +24,7 @@
             </div>
             <div class="farmDistant">
               <span class="text">当前距离:</span>
-              <span class="distant">{{ juli / 100}}km</span>
+              <span class="distant">{{ juli / 1000}}km</span>
             </div>
             <div class="farmProject">
               <span class="text">游玩项目:</span>

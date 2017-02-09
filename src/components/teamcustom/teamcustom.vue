@@ -46,7 +46,7 @@
         <x-textarea  class="texarea" :max="200" :height="100" placeholder="请填写详细信息"></x-textarea>
       </group>
       <div class="post" >
-        <x-button type="primary" :mini="true" style="margin:0 auto;">提交</x-button>
+        <x-button type="primary" :mini="true" style="margin:10px auto;width:100px;height:40px;">提交</x-button>
       </div>
     </div>
   </div>

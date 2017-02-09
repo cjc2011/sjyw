@@ -8,7 +8,7 @@
       <i class="icon weui_icon_search"></i>
       <input type="search" placeholder="假期去哪玩">
     </div>
-    <span class="icon iconfont icon-wo" :class="{ green: green}"></span>
+    <span  class="icon iconfont icon-wo" :class="{ green: green}" @click="showuser"></span>
   </header>
 </template>
 
@@ -35,6 +35,9 @@
     methods:{
       cityshow(){
         this.$router.push('/selectcity')
+      },
+      showuser(){
+        this.$router.push('user')
       },
       handleScroll() {
         let opacity = (100 - document.body.scrollTop) /100 > 0 ? (100 - document.body.scrollTop) /100: 0 ;

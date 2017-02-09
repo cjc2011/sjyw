@@ -29,8 +29,10 @@
       showrouter(index){
         if (index === 2 ){
           this.$router.push('teamcustom')
-        }else{
-          this.$router.push('searchlist')
+        }else if(index === 1){
+          this.$router.push({path:'searchlist',query:{type:'farm'}})
+        }else if(index === 0){
+          this.$router.push({path:'searchlist',query:{type:'sight'}})
         }
       }
     }

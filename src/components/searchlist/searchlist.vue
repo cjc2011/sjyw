@@ -2,7 +2,8 @@
   <div class="searchlist_warpper">
     <div class="searchlist_top">
       <span class="searchlist_back" @click="back"></span>
-      <h1>景区</h1>
+      <h1 v-if="type === 'farm'">农家乐</h1>
+      <h1 v-if="type === 'sight'">景区</h1>
     </div>
     <div class="searchlist_content">
       <div class="screen_warpper">
@@ -23,16 +24,8 @@
         <div class="drop_box">
           <div class="overall_box box" :class="{'active':active===1}">
             <ul>
-              <li class="vux-1px-b border" :class="{'active':overall === 0}" @click="overallshow(0)">
-                <span>综合排序</span>
-                <icon type="success_no_circle"></icon>
-              </li>
-              <li class="vux-1px-b border" :class="{'active':overall === 1}" @click="overallshow(1)">
-                <span>距离排序</span>
-                <icon type="success_no_circle"></icon>
-              </li>
-              <li :class="{'active':overall === 2}" @click="overallshow(2)">
-                <span>推荐排序</span>
+              <li v-for="(item,index) in type==='farm'? farmsort : sightsort " :class="{'vux-1px-b border':index < 2,'active':overall == index}"  @click="overallshow(index)">
+                <span>{{item.text}}</span>
                 <icon type="success_no_circle"></icon>
               </li>
             </ul>
@@ -51,15 +44,18 @@
           <div class="area_box box" :class="{'active':active===3}" v-if="index_city">
             <h2 class="index_city">{{cityname}}</h2>
             <ul>
-              <li class="area_item" v-for="item in index_city.city" :classs="{'active':item.region_id}" @click="cityactive(item.region_id)">
+              <li class="area_item"  v-for="item in index_city.city" :class="{'active':indexcity == item.region_id}"  @click="cityactive(item.region_id)">
                 <span class="area_item_text">{{item.region_name}}</span>
               </li>
             </ul>
           </div>
         </div>
       </div>
-      <div class="showlist">
+      <div class="showlist"  v-if="type === 'sight'">
         <sights :sightdata="sightdata"></sights>
+      </div>
+      <div class="famrlist_show" v-if="type === 'farm'">
+        <farmlist :farmdata="farmdata"></farmlist>
       </div>
     </div>
   </div>
@@ -68,7 +64,8 @@
 <script type="text/ecmascript-6">
   import scroller from '../../../node_modules/vux/src/components/scroller/index.vue';
   import sights from '../../components/sights/sights.vue';
-  import icon from '../../../node_modules/vux/src/components/icon/index.vue'
+  import farmlist from '../../components/farmlist/farmlist.vue'
+  import icon from '../../../node_modules/vux/src/components/icon/index.vue';
   export default {
     props:{
       cityname:{
@@ -80,19 +77,50 @@
     },
     data() {
       return {
+        type:this.$route.query.type,
         playdata:['用餐','住宿','会务','K歌','骑马','漂流','蹦极','竹筏','登山','野营','采摘','烧烤','骑行','摄影','垂钓','庙宇','道观','游乐场','烤全羊','水上游船','真人CS','麻将','台球','乒乓球','温泉','儿童乐园','动物园','耕种体验','滑雪','攀岩','参观','玻璃栈道','休闲','高尔夫','品茶'],
-        active:0,               //选项卡参数
-        overall:null,           //综合排序 active参数
-        playactive:null,        //游玩项目选中active 参数
-        sightdata:null,
-        opation:{
-          page:0,
-          province:null,
-          city:null,
-          lat:null,
-          lng:null,
-          program:null,
-          sort:null
+        active: 0,               //选项卡参数
+        overall: 0,             //综合排序 active参数
+        playactive: null,        //游玩项目选中active 参数
+        indexcity: null,         //选中城市 active
+        sightdata: null,          //景区数据       //综合排序传0   距离排序1   推荐排序传2
+        farmdata:null,            //农家乐数据     //综合排序传0   距离排序1
+        sightsort:[
+          {
+            text:'综合排序',
+            num:0
+          },
+          {
+            text:'距离排序',
+            num:1
+          },
+          {
+            text:'推荐排序',
+            num:2
+          }
+        ],
+        farmsort: [
+          {
+            text:'距离排序',
+            num:0
+          },
+          {
+            text:'销量排序',
+            num:1
+          },
+          {
+            text:'价格排序',
+            num:2
+          }
+        ],
+        opation: {
+          page: 0,
+          province: null,
+          city: null,
+          lat: null,
+          lng: null,
+          program: null,
+          sort: 0
         }
       }
     },
@@ -122,24 +150,28 @@
     methods: {
       //排序方式
       overallshow(index) {
+        this.active = 0;
         this.overall = index;
         this.opation.sort = index;
         this.getdata();
       },
       //选择游玩项目
       playitem(index){
+        this.active = 0;
         this.playactive = index;
         this.opation.program = index;
         this.getdata();
       },
       //选择城市
       cityactive(cityid) {
-        this.playactive = cityid;
+        this.active = 0;
+        this.indexcity = cityid;
         this.opation.city = cityid;
         this.getdata();
       },
       getdata(){
-        this.$http.get('Api/sights_list',{
+        let search = this.type === 'farm' ? 'Api/farm_list' : 'Api/sights_list';
+        this.$http.get(search,{
           params: {
             page:this.opation.page,
             province:this.opation.province,
@@ -151,7 +183,11 @@
           }
         }).then((response)=>{
           if(response.body.status === 200){
-            this.sightdata=response.body.data.list;
+            if(this.type === 'farm'){
+              this.farmdata = response.body.data.list;
+            }else{
+              this.sightdata=response.body.data.list;
+            }
           }else{
             alert('暂无数据')
           }
@@ -176,6 +212,7 @@
     components: {
       scroller,
       sights,
+      farmlist,
       icon
     }
   }
@@ -329,6 +366,10 @@
                 width: 25%;
                 text-align: center;
                 margin-bottom: 6px;
+                &.active span{
+                  border: 1px solid #01bbd4;
+                  color: #01bbd4;
+                }
                 .area_item_text{
                   display: inline-block;
                   width: 90%;

@@ -8,6 +8,7 @@ import home from '../src/components/home/home.vue';
 import selectcity from '../src/components/selectcity/selectcity.vue';
 import teamcustom from '../src/components/teamcustom/teamcustom.vue';
 import searchlist from '../src/components/searchlist/searchlist.vue';
+import user from '../src/components/user/user.vue';
 import './commont/css/reset.css';
 import '../node_modules/vux/src/styles/reset.less'
 
@@ -23,6 +24,7 @@ let routes = [
   {path:'/selectcity',component:selectcity},
   {path:'/teamcustom',component:teamcustom},
   {path:'/searchlist',component: searchlist},
+  {path:'/user',component: user},
 ];
 const router = new VueRouter({
   routes

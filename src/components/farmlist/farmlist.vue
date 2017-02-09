@@ -1,7 +1,6 @@
 <template>
   <div class="farm_content">
-    <h1 class="farm_title">附近农家乐</h1>
-    <div class="farm_warpper" v-if="farmdata.length">
+    <div class="farm_warpper" v-if="farmdata && farmdata.length">
       <ul class="farm_list">
         <li v-for="item in farmdata" class="farm_item" @click="farminfo(item)">
           <!--<router-link to="/farminfo">-->
@@ -55,12 +54,10 @@
     created() {
 
     },
-    watch: {
-
-    },
     methods: {
       farminfo(item) {
-        this.$router.push({ path: 'farminfo', query: { id: item.id,juli: item.juli}});
+        let distance = item.juli || item.farm_distance * 1000;
+        this.$router.push({ path: 'farminfo', query: { id: item.id,juli: distance}});
       },
       coll() {
         alert("收藏")
