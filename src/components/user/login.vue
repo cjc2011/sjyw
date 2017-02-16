@@ -4,6 +4,8 @@
       <span class="login_back" @click="back"></span>
       <h1>登录</h1>
     </div>
+    <toast v-model="toaskshow" :time=1000 :type="toaskttype" @on-hide="toasthide">{{toasktext}}</toast>
+    <alert v-model="alertshow"> {{ '验证码已发送'}}</alert>
     <div class="login_content">
       <tab :line-width=2 active-color='#01bbd4' v-model="index">
         <tab-item  class="vux-center" v-for="(item,index) in tab_list" >{{item}}</tab-item>
@@ -71,7 +73,9 @@
                   slot="after-title"
                   placeholder="请输入验证码">
                 <span slot="value" class="yzm">
-                  <i class="yzm_btn">获取验证码</i>
+                  <countdown v-model="time" v-show="timeshow" :start="timestart"  @on-finish="finish"></countdown>
+                  <i class="yzm_btn" v-show="getshow" @click="getyzm">获取验证码</i>
+                  <i class="yzm_btn agin" v-show="aginshow" @click="getyzm">重新获取</i>
                 </span>
               </cell>
               <x-button class="login" type="primary" @click.native="phonelogin">登录</x-button>
@@ -92,11 +96,22 @@
   import Swiper from '../../../node_modules/vux/src/components/swiper/swiper.vue';
   import SwiperItem from '../../../node_modules/vux/src/components/swiper/swiper-item.vue';
   import XButton  from '../../../node_modules/vux/src/components/x-button/index.vue';
-
+  import Alert from '../../../node_modules/vux/src/components/alert/index.vue';
+  import Toast from '../../../node_modules/vux/src/components/toast/index.vue';
+  import Countdown from '../../../node_modules/vux/src/components/countdown/index.vue'
   export  default {
     data() {
       return {
         loginshow:true,
+        time:120,
+        timeshow:false,
+        getshow:true,
+        aginshow:false,
+        timestart:false,
+        alertshow:false,
+        toaskshow:false,
+        toasktext:'',
+        toaskttype:'warn',
         tab_list: ['帐号登录','手机验证码登录'],
         index: 0,
         pass_type:'password',
@@ -108,9 +123,21 @@
       }
     },
     methods: {
+      toasthide(){
+        this.toaskttype = 'warn';
+      },
+      //返回事件
       back(){
 
       },
+      //倒计时结束事件
+      finish(){
+        this.aginshow = true;                         //显示重新发送
+        this.timestart = false;                       //倒计时关闭
+        this.timeshow = false;                        //隐藏倒计时
+        this.time = 10;
+      },
+      //密码可见
       pashow(){
         this.eyeshow = !this.eyeshow;
         if(this.eyeshow){
@@ -118,20 +145,67 @@
         }else{
           this.$refs.pasw.type = "password";
         }
-
       },
       //手机验证码登录
-      phonelogin() {
-
+      phonelogin(){
+        if(!this.phone){
+          this.toasktext = '请输入正确手机号';
+          this.toaskshow = true;
+          return
+        }
+        if(!this.yzm){
+          this.toasktext = '请输入正确验证码';
+          this.toaskshow = true;
+          return
+        }
+        this.$http.get('/Api/sms_login', {
+          params: {
+            tel: this.phone,
+            code:this.yzm
+          }
+        }).then((response)=>{
+          var data = response.body;
+          if(data.status == 200){
+            this.toaskttype = 'success';
+            this.toasktext = '登陆成功';
+            this.toaskshow = true;
+          }
+        })
+      },
+      getyzm(){
+        if(!this.phone){
+          this.toasktext = '请输入正确手机号';
+          this.toaskshow = true;
+          return
+        }
+        this.aginshow = false;                    //二次点击  关闭重新发送
+        this.getshow = false;                     //关闭获取验证码
+        this.alertshow = true;                    //弹出验证码已发送提示
+        this.timeshow = true;                    //倒计时显示
+        this.timestart = true;                    //倒计时开启
+        this.$http.get('/Api/send_sms_login', {
+          params: {
+            tel: this.phone,
+          }
+        }).then((response)=>{
+          var data = JSON.parse(response.body);
+          if(data.status == 200){
+            this.toaskttype = 'success';
+            this.toasktext = '获取验证码成功';
+            this.toaskshow = true;
+          }
+        })
       },
       //帐号登录
       accountlogin() {
         if(!this.account){
-          alert('请输入帐号')
+          this.toasktext = '请输入正确帐号';
+          this.toaskshow = true;
           return
         }
         if(!this.password){
-          alert('请输入密码')
+          this.toasktext = '请输入密码';
+          this.toaskshow = true;
           return
         }
         this.$http.get('/Api/login', {
@@ -141,6 +215,12 @@
           }
         }).then((response)=>{
           var data = response.body;
+          if(data.status === 200){
+            this.toaskttype = 'success';
+            this.toasktext = '登陆成功';
+            this.toaskshow = true;
+          }
+          console.log(data);
         })
       }
     },
@@ -152,7 +232,10 @@
       group,
       cell,
       XInput,
-      XButton
+      XButton,
+      Alert,
+      Toast,
+      Countdown
     }
   }
 </script>
@@ -232,8 +315,9 @@
         border-bottom: 1px solid #ececec;
       }
       .yzm{
-
+        text-align: center;
         width: 100px;
+        background:rgba(255,255,255,0);
         .yzm_btn{
           font-style: normal;
           color: #ffffff;
@@ -241,6 +325,9 @@
           padding: 5px 10px;
           background: #01bbd4;
           border-radius: 5px;
+        }
+        .agin{
+          background: #cccccc;
         }
       }
       .eyeshow{
