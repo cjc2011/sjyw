@@ -1,9 +1,7 @@
 <template>
   <div class="home" ref="scroll">
     <div class="home-wrapper" >
-      <transition :name="$router.app.pageTransition">
-        <router-view   v-on:hide="showchange" v-on:select="setcity" :citydata="citydata" :cityname="cityname" v-on:showchange="showchange" :home_data="home_data"></router-view>
-      </transition>
+      <router-view   v-on:hide="showchange" v-on:select="setcity" :citydata="citydata" :cityname="cityname" v-on:showchange="showchange" :home_data="home_data"></router-view>
     </div>
     <div id="m"></div>
   </div>
@@ -51,7 +49,7 @@
             map.panTo(r.point);
             that.lng = r.point.lng;
             that.lat = r.point.lat;
-            //console.log('经度:'+that.lng,'纬度：'+that.lat,)
+            console.log('经度:'+that.lng,'纬度：'+that.lat,)
           }
           else {
             alert('failed'+this.getStatus());

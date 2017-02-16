@@ -1,64 +1,64 @@
 <template>
-  <div class="searchlist_warpper">
-    <div class="searchlist_top">
-      <span class="searchlist_back" @click="back"></span>
-      <h1 v-if="type === 'farm'">农家乐</h1>
-      <h1 v-if="type === 'sight'">景区</h1>
-    </div>
-    <div class="searchlist_content">
-      <div class="screen_warpper">
-        <div class="screen">
-          <div class="screen-item" @click="tabshow(1)">
-            <span class="screen_text">综合排序</span>
-            <span class="icon_dwon"></span>
+    <div class="searchlist_warpper">
+      <div class="searchlist_top">
+        <span class="searchlist_back" @click="back"></span>
+        <h1 v-if="type === 'farm'">农家乐</h1>
+        <h1 v-if="type === 'sight'">景区</h1>
+      </div>
+      <div class="searchlist_content">
+        <div class="screen_warpper">
+          <div class="screen">
+            <div class="screen-item" @click="tabshow(1)">
+              <span class="screen_text">综合排序</span>
+              <span class="icon_dwon"></span>
+            </div>
+            <div class="screen-item" @click="tabshow(2)">
+              <span class="screen_text">游玩项目</span>
+              <span class="icon_dwon"></span>
+            </div>
+            <div class="screen-item" @click="tabshow(3)">
+              <span class="screen_text">区域</span>
+              <span class="icon_dwon"></span>
+            </div>
           </div>
-          <div class="screen-item" @click="tabshow(2)">
-            <span class="screen_text">游玩项目</span>
-            <span class="icon_dwon"></span>
-          </div>
-          <div class="screen-item" @click="tabshow(3)">
-            <span class="screen_text">区域</span>
-            <span class="icon_dwon"></span>
+          <div class="drop_box">
+            <div class="overall_box box" :class="{'active':active===1}">
+              <ul>
+                <li v-for="(item,index) in type==='farm'? farmsort : sightsort " :class="{'vux-1px-b border':index < 2,'active':overall == index}"  @click="overallshow(index)">
+                  <span>{{item.text}}</span>
+                  <icon type="success_no_circle"></icon>
+                </li>
+              </ul>
+            </div>
+            <div class="play_box box" :class="{'active':active===2}">
+              <scroller lock-x height="180px" ref="scroller" >
+                <div class="scrollwapper">
+                  <ul>
+                    <li class="play_box_item" v-for="(item,index) in playdata" :class="{'active':playactive === index}" @click="playitem(index)">
+                      <span class="play_box_text">{{item}}</span>
+                    </li>
+                  </ul>
+                </div>
+              </scroller>
+            </div>
+            <div class="area_box box" :class="{'active':active===3}" v-if="index_city">
+              <h2 class="index_city">{{cityname}}</h2>
+              <ul>
+                <li class="area_item"  v-for="item in index_city.city" :class="{'active':indexcity == item.region_id}"  @click="cityactive(item.region_id)">
+                  <span class="area_item_text">{{item.region_name}}</span>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
-        <div class="drop_box">
-          <div class="overall_box box" :class="{'active':active===1}">
-            <ul>
-              <li v-for="(item,index) in type==='farm'? farmsort : sightsort " :class="{'vux-1px-b border':index < 2,'active':overall == index}"  @click="overallshow(index)">
-                <span>{{item.text}}</span>
-                <icon type="success_no_circle"></icon>
-              </li>
-            </ul>
-          </div>
-          <div class="play_box box" :class="{'active':active===2}">
-            <scroller lock-x height="180px" ref="scroller" >
-              <div class="scrollwapper">
-                <ul>
-                  <li class="play_box_item" v-for="(item,index) in playdata" :class="{'active':playactive === index}" @click="playitem(index)">
-                    <span class="play_box_text">{{item}}</span>
-                  </li>
-                </ul>
-              </div>
-            </scroller>
-          </div>
-          <div class="area_box box" :class="{'active':active===3}" v-if="index_city">
-            <h2 class="index_city">{{cityname}}</h2>
-            <ul>
-              <li class="area_item"  v-for="item in index_city.city" :class="{'active':indexcity == item.region_id}"  @click="cityactive(item.region_id)">
-                <span class="area_item_text">{{item.region_name}}</span>
-              </li>
-            </ul>
-          </div>
+        <div class="showlist"  v-if="type === 'sight'">
+          <sights :sightdata="sightdata"></sights>
+        </div>
+        <div class="famrlist_show" v-if="type === 'farm'">
+          <farmlist :farmdata="farmdata"></farmlist>
         </div>
       </div>
-      <div class="showlist"  v-if="type === 'sight'">
-        <sights :sightdata="sightdata"></sights>
-      </div>
-      <div class="famrlist_show" v-if="type === 'farm'">
-        <farmlist :farmdata="farmdata"></farmlist>
-      </div>
     </div>
-  </div>
 </template>
 
 <script type="text/ecmascript-6">
@@ -66,6 +66,8 @@
   import sights from '../../components/sights/sights.vue';
   import farmlist from '../../components/farmlist/farmlist.vue'
   import icon from '../../../node_modules/vux/src/components/icon/index.vue';
+
+
   export default {
     props:{
       cityname:{
@@ -221,6 +223,21 @@
 <style lang="less">
   @import '../../../node_modules/vux/src/styles/1px.less';
   .searchlist_warpper{
+   /* background: #ffffff;
+    transform:translate3D(0px,0,0);
+    transition: all 0.1s linear;*/
+    &.move-enter-active{
+      //定义元素显示的动画enter-active
+      /*transform: translate3D(100%,0,0);*/
+    }
+    &.move-leave-active {
+      //定义元素隐藏时的动画 leave-active
+    }
+    &.move-enter,&.move-leave-active {
+      //定义元素开始进入动画和隐藏后的状态样式
+      /*transform:translate3D(100%,0,0);*/
+    }
+
     .searchlist_top{
       position: fixed;
       width: 100%;

@@ -33,7 +33,7 @@
         </datetime>
         <x-input title="出发地点" placeholder="请详细填写您的出发地址" v-model="star_address"></x-input>
         <x-input title="目的地址" placeholder="请详细填写您的目的地址" v-model="end_address"></x-input>
-        <x-input class="yusuan" title="预算 ¥" placeholder="0" v-model="yusuan"></x-input>
+        <x-input class="yusuan"  title="预算 ¥" placeholder="0" v-model="yusuan"></x-input>
       </group>
       <group >
         <x-input title="联系人 " placeholder="必填" v-model="user"></x-input>

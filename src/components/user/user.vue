@@ -53,6 +53,7 @@
         </cell>
       </group>
     </div>
+    <login></login>
   </div>
 </template>
 
@@ -60,6 +61,7 @@
   import Blur from '../../../node_modules/vux/src/components/blur/index.vue';
   import group from '../../../node_modules/vux/src/components/group/index.vue';
   import cell from '../../../node_modules/vux/src/components/cell/index.vue';
+  import login from './login.vue';
   export default {
     data() {
       return {
@@ -69,7 +71,8 @@
     components: {
       Blur,
       group,
-      cell
+      cell,
+      login
     }
   }
 </script>
