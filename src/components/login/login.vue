@@ -99,6 +99,7 @@
   import Alert from '../../../node_modules/vux/src/components/alert/index.vue';
   import Toast from '../../../node_modules/vux/src/components/toast/index.vue';
   import Countdown from '../../../node_modules/vux/src/components/countdown/index.vue'
+  import { saveUserStatus,getUserStatus,loadFromLocal } from  '../../commont/js/store';
   export  default {
     data() {
       return {
@@ -128,7 +129,7 @@
       },
       //返回事件
       back(){
-
+        this.$router.go(-1)
       },
       //倒计时结束事件
       finish(){
@@ -141,9 +142,9 @@
       pashow(){
         this.eyeshow = !this.eyeshow;
         if(this.eyeshow){
-          this.$refs.pasw.type = "number";
-        }else{
           this.$refs.pasw.type = "password";
+        }else{
+          this.$refs.pasw.type = "number";
         }
       },
       //手机验证码登录
@@ -165,10 +166,16 @@
           }
         }).then((response)=>{
           var data = response.body;
+          console.log(data)
           if(data.status == 200){
             this.toaskttype = 'success';
             this.toasktext = '登陆成功';
             this.toaskshow = true;
+            saveUserStatus(true,data.data.id);
+            loadFromLocal(data.data.id,'msg',data.data);
+            setTimeout(function(){
+              this.$router.go(-1)
+            },bind(this),1000)
           }
         })
       },
@@ -180,7 +187,6 @@
         }
         this.aginshow = false;                    //二次点击  关闭重新发送
         this.getshow = false;                     //关闭获取验证码
-        this.alertshow = true;                    //弹出验证码已发送提示
         this.timeshow = true;                    //倒计时显示
         this.timestart = true;                    //倒计时开启
         this.$http.get('/Api/send_sms_login', {
@@ -189,10 +195,9 @@
           }
         }).then((response)=>{
           var data = JSON.parse(response.body);
+          console.log(data)
           if(data.status == 200){
-            this.toaskttype = 'success';
-            this.toasktext = '获取验证码成功';
-            this.toaskshow = true;
+            this.alertshow = true;                    //弹出验证码已发送提示
           }
         })
       },
@@ -214,13 +219,18 @@
             pwd: this.password,
           }
         }).then((response)=>{
-          var data = response.body;
+          let data = response.body;
+          let that = this;
           if(data.status === 200){
             this.toaskttype = 'success';
             this.toasktext = '登陆成功';
             this.toaskshow = true;
+            saveUserStatus(true,data.data.id);
+            loadFromLocal(data.data.id,'msg',data.data);
+            setTimeout(function(){
+              that.$router.go(-1)
+            },1000);
           }
-          console.log(data);
         })
       }
     },
@@ -246,10 +256,10 @@
   top: 0;
   bottom: 0;
   width: 100%;
-  background: url("bg.jpg") no-repeat ;
+  background: url("../user/bg.jpg") no-repeat ;
   background-size:100% 100%;
   .login_top{
-    position: fixed;
+    position: absolute;
     width: 100%;
     height: 40px;
     background: #efffff;
@@ -309,7 +319,7 @@
         width: 30px;
         height: 27px;
         font-size: 14px;
-        background:url("eyeclose.png") no-repeat center;
+        background:url("../user/eyeclose.png") no-repeat center;
         background-size: 20px 10px;
         z-index: 10;
         border-bottom: 1px solid #ececec;
@@ -331,7 +341,7 @@
         }
       }
       .eyeshow{
-        background:url("eyeshow.png") no-repeat center;
+        background:url("../user/eyeshow.png") no-repeat center;
         background-size: 20px 10px;
       }
     }

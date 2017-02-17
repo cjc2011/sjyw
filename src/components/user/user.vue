@@ -1,21 +1,23 @@
 <template>
   <div class="userwapper">
     <div class="user_top">
-      <blur :blur-amount=20 :url="url">
+      <a id="login" v-if="!userlogin" @click="gologin">登录</a>
+      <blur :blur-amount=0 :url="blurimg">
         <div class="user_content">
           <div class="user_img">
-            <img src="user.jpg">
+            <img v-if="userlogin" :src="url+userdata.user_face">
+            <img v-if="!userlogin" src="http://www.lagou.com/images/myresume/default_headpic.png" @click="gologin" >
           </div>
-          <div class="user_name">
-            <span class="text">陈嘉诚</span>
-            <span class="leav">LV.1</span>
+          <div class="user_name" v-if="userlogin">
+            <span class="text">{{userdata.user_nickname}}</span>
+            <span class="leav">LV.{{userdata.user_collect}}</span>
           </div>
-          <div class="user_account">账号:17701088188</div>
+          <div class="user_account" v-if="userlogin">账号:{{userdata.user_mobile}}</div>
         </div>
       </blur>
     </div>
     <div class="user_money">
-      <div class="coupons" style="border-right:1px solid #01bbd4">
+      <div class="coupons" style="border-right:1px solid #01bbd4" @click="wallet">
         <span class="coupons_icon icon"></span>
         <span class="text">钱包</span>
       </div>
@@ -53,7 +55,7 @@
         </cell>
       </group>
     </div>
-    <login></login>
+    <wallet v-if="walletshow"></wallet>
   </div>
 </template>
 
@@ -61,23 +63,58 @@
   import Blur from '../../../node_modules/vux/src/components/blur/index.vue';
   import group from '../../../node_modules/vux/src/components/group/index.vue';
   import cell from '../../../node_modules/vux/src/components/cell/index.vue';
-  import login from './login.vue';
+  import wallet from './wallet.vue';
+  import {saveUserStatus, getUserStatus, loadFromLocal, getFromLocal} from  '../../commont/js/store';
+
   export default {
     data() {
       return {
-        url:'https://o3e85j0cv.qnssl.com/tulips-1083572__340.jpg'
+        blurimg: 'http://app.flower-china.cn/dist/img/userbg.jpg',
+        url: 'http://www.bjsjyw.cn',
+        walletshow:false
+      }
+    },
+    created() {
+      this.userlogin = getUserStatus().status;
+    },
+    methods: {
+      gologin() {
+        this.$router.push('login')
+      },
+      wallet() {
+        if(!this.userlogin){
+          this.$router.push('login')
+        }else{
+          this.walletshow = true;
+        }
+      }
+    },
+    computed: {
+      userdata() {
+        if(this.userlogin){
+          return getFromLocal(getUserStatus().id)
+        }
+        return false
       }
     },
     components: {
       Blur,
       group,
       cell,
-      login
+      wallet
     }
   }
 </script>
 
 <style lang="less">
+#login{
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  color: #ffffff;
+  padding: 15px;
+  z-index: 2;
+}
 .userwapper{
   .user_content{
     position: relative;
@@ -91,6 +128,7 @@
       border-radius: 50%;
       overflow: hidden;
       text-align: center;
+      border:2px solid white;
       img{
         display: inline-block;
         height: 100%;
@@ -101,7 +139,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      top: 100px;
+      top: 104px;
       width: 100%;
       line-height: 24px;
       text-align: center;
@@ -113,9 +151,9 @@
       }
       .leav{
         display: inline-block;
-        padding: 0px 10px;
-        font-size: 8px;
-        line-height: 15px;
+        padding: 0px 8px;
+        font-size: 12px;
+        line-height: 14px;
         color: #e9bd1d;
         border: 1px solid #e9bd1d;
         border-radius: 7px;
@@ -124,7 +162,7 @@
     }
     .user_account{
       position: absolute;
-      top: 124px;
+      top: 128px;
       width: 100%;
       font-size: 14px;
       text-align: center;
