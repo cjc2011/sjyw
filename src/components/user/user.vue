@@ -1,13 +1,14 @@
 <template>
   <div class="userwapper">
     <div class="user_top">
-      <a id="login" v-if="!userlogin" @click="gologin">登录</a>
+
       <blur :blur-amount=0 :url="blurimg">
         <div class="user_content">
           <div class="user_img">
             <img v-if="userlogin" :src="url+userdata.user_face">
             <img v-if="!userlogin" src="http://www.lagou.com/images/myresume/default_headpic.png" @click="gologin" >
           </div>
+          <a id="login" v-if="!userlogin" @click="gologin">登录</a>
           <div class="user_name" v-if="userlogin">
             <span class="text">{{userdata.user_nickname}}</span>
             <span class="leav">LV.{{userdata.user_collect}}</span>
@@ -21,7 +22,7 @@
         <span class="coupons_icon icon"></span>
         <span class="text">钱包</span>
       </div>
-      <div class="wallet">
+      <div class="wallet" @click="coupon">
         <span class="wallet_icon icon"></span>
         <span class="text">优惠券</span>
       </div>
@@ -29,13 +30,10 @@
     <div class="br"></div>
     <div class="list">
       <group>
-        <cell title="我的订单" is-link>
+        <cell title="我的订单" is-link  @click.native="sell">
           <img class="list_icon" slot="icon" src="order.png">
         </cell>
-        <cell title="我的评价" is-link>
-          <img class="list_icon" slot="icon" src="eval.png">
-        </cell>
-        <cell title="我的收藏" is-link>
+        <cell title="我的收藏" is-link @click.native="coll">
           <img class="list_icon" slot="icon" src="coll.png">
         </cell>
         <cell title="我的团队定制" is-link>
@@ -44,18 +42,25 @@
       </group>
       <div class="br"></div>
       <group>
-        <cell title="我要加盟" is-link>
+        <cell title="我要加盟" is-link @click.native="feedback">
           <img class="list_icon" slot="icon" src="phone.png">
         </cell>
-        <cell title="意见反馈" is-link>
+        <cell title="意见反馈" is-link @click.native="opinion">
           <img class="list_icon" slot="icon" src="comment.png">
         </cell>
-        <cell title="关于四季游玩" is-link>
+        <cell title="关于四季游玩" is-link @click.native="about">
           <img class="list_icon" slot="icon" src="leav.png">
         </cell>
       </group>
     </div>
-    <wallet v-if="walletshow"></wallet>
+    <a v-if="userlogin"  class="quit" @click="quit">退出登录</a>
+    <wallet v-if="walletshow" v-on:back="wallethide"></wallet>
+    <coupon v-if="couponshow" v-on:back="couponhide"></coupon>
+    <sell v-if="sellshow && userlogin" :id="id" v-on:back="sellhide"></sell>
+    <coll v-if="collshow && userlogin" v-on:back="collhide"></coll>
+    <feedback v-if="feedbackshow" v-on:back="feedbackhide"></feedback>
+    <about v-if="aboutshow" v-on:back="abouthide"></about>
+    <opinion v-if="opinionshow" v-on:back="opinionhide"></opinion>
   </div>
 </template>
 
@@ -64,6 +69,12 @@
   import group from '../../../node_modules/vux/src/components/group/index.vue';
   import cell from '../../../node_modules/vux/src/components/cell/index.vue';
   import wallet from './wallet.vue';
+  import coupon from './coupon.vue';
+  import sell from './sell.vue';
+  import coll from './coll.vue';
+  import feedback from './feedback.vue';
+  import about from './about.vue';
+  import opinion from './opinion.vue';
   import {saveUserStatus, getUserStatus, loadFromLocal, getFromLocal} from  '../../commont/js/store';
 
   export default {
@@ -71,7 +82,13 @@
       return {
         blurimg: 'http://app.flower-china.cn/dist/img/userbg.jpg',
         url: 'http://www.bjsjyw.cn',
-        walletshow:false
+        walletshow:false,
+        couponshow:false,
+        sellshow:false,
+        collshow:false,
+        feedbackshow:false,
+        aboutshow:false,
+        opinionshow:false
       }
     },
     created() {
@@ -81,12 +98,67 @@
       gologin() {
         this.$router.push('login')
       },
+      quit() {
+        saveUserStatus(false,null);
+        this.$router.push('home');
+      },
       wallet() {
         if(!this.userlogin){
           this.$router.push('login')
         }else{
           this.walletshow = true;
         }
+      },
+      wallethide() {
+        this.walletshow = false;
+      },
+      coupon(){
+        if(!this.userlogin){
+          this.$router.push('login')
+        }else{
+          this.couponshow = true;
+        }
+      },
+      couponhide() {
+        this.couponshow = false;
+      },
+      sell() {
+        if(!this.userlogin){
+          this.$router.push('login')
+        }else{
+          this.sellshow = true;
+        }
+      },
+      sellhide(){
+        this.sellshow = false;
+      },
+      coll() {
+        if(!this.userlogin){
+          this.$router.push('login')
+        }else{
+          this.collshow = true;
+        }
+      },
+      collhide(){
+        this.collshow = false;
+      },
+      feedback(){
+        this.feedbackshow = true;
+      },
+      feedbackhide(){
+        this.feedbackshow = false;
+      },
+      about(){
+        this.aboutshow = true;
+      },
+      abouthide() {
+        this.aboutshow = false;
+      },
+      opinion(){
+        this.opinionshow = true;
+      },
+      opinionhide(){
+        this.opinionshow = false;
       }
     },
     computed: {
@@ -95,13 +167,24 @@
           return getFromLocal(getUserStatus().id)
         }
         return false
+      },
+      id() {
+        if(this.userlogin){
+          return getUserStatus().id
+        }
       }
     },
     components: {
       Blur,
       group,
       cell,
-      wallet
+      wallet,
+      coupon,
+      sell,
+      coll,
+      feedback,
+      about,
+      opinion
     }
   }
 </script>
@@ -109,13 +192,17 @@
 <style lang="less">
 #login{
   position: absolute;
-  right: 0px;
-  top: 0px;
+  left: 50%;
+  top: 100px;
+  transform: translateX(-50%);
   color: #ffffff;
   padding: 15px;
   z-index: 2;
 }
 .userwapper{
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
   .user_content{
     position: relative;
     top: 30px;
@@ -219,6 +306,18 @@
     .weui_cell:before{
       border-top:1px solid #ccf1f6;
     }
+  }
+  .quit{
+    display: block;
+    width: 300px;
+    height: 40px;
+    margin: 10px auto;
+    line-height: 40px;
+    text-align: center;
+    font-size: 15px;
+    border-radius: 5px;
+    color: #fff;
+    background: #d80000;
   }
   .list_icon{
     width: 21px;

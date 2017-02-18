@@ -1,18 +1,18 @@
 <template>
-  <div class="wallet_wapper">
-    <div class="wallet_top">
-      <span class="wallet_back" @click="back"></span>
-      <h1>我的钱包</h1>
+    <div class="wallet_wapper">
+      <div class="wallet_top">
+        <span class="wallet_back" @click="back"></span>
+        <h1>我的钱包</h1>
+      </div>
+      <p>此功能暂未开放:)</p>
     </div>
-    <p>此功能暂未开放:)</p>
-  </div>
 </template>
 
 <script type="text/ecmascript-6">
   export default {
     methods: {
       back(){
-
+        this.$emit('back')
       }
     }
   }
@@ -24,10 +24,12 @@
   bottom: 0;
   top:0;
   width: 100%;
-  height: 102%;
+  height: 100vh;
+  box-sizing: border-box;
+  overflow: hidden;
   background: #ffffff;
   .wallet_top{
-    position: absolute;
+    position: fixed;
     width: 100%;
     height: 40px;
     box-sizing: border-box;

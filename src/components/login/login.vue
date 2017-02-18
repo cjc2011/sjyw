@@ -169,13 +169,21 @@
           console.log(data)
           if(data.status == 200){
             this.toaskttype = 'success';
-            this.toasktext = '登陆成功';
+            this.toasktext = '登录成功';
             this.toaskshow = true;
             saveUserStatus(true,data.data.id);
             loadFromLocal(data.data.id,'msg',data.data);
             setTimeout(function(){
               this.$router.go(-1)
             },bind(this),1000)
+          }else if(data.status == 401){
+            this.toaskttype = 'warn';
+            this.toasktext = '验证码错误';
+            this.toaskshow = true;
+          }else if(data.status == 400){
+            this.toaskttype = 'warn';
+            this.toasktext = '用户不存在请先注册';
+            this.toaskshow = true;
           }
         })
       },
@@ -223,7 +231,7 @@
           let that = this;
           if(data.status === 200){
             this.toaskttype = 'success';
-            this.toasktext = '登陆成功';
+            this.toasktext = '登录成功';
             this.toaskshow = true;
             saveUserStatus(true,data.data.id);
             loadFromLocal(data.data.id,'msg',data.data);

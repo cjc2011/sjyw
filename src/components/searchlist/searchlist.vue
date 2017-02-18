@@ -5,6 +5,7 @@
         <h1 v-if="type === 'farm'">农家乐</h1>
         <h1 v-if="type === 'sight'">景区</h1>
       </div>
+      <Toast v-model="toaskshow" :time=1000 type="warn">此地区暂无数据</Toast>
       <div class="searchlist_content">
         <div class="screen_warpper">
           <div class="screen">
@@ -66,6 +67,7 @@
   import sights from '../../components/sights/sights.vue';
   import farmlist from '../../components/farmlist/farmlist.vue'
   import icon from '../../../node_modules/vux/src/components/icon/index.vue';
+  import Toast from '../../../node_modules/vux/src/components/toast/index.vue';
 
 
   export default {
@@ -79,6 +81,7 @@
     },
     data() {
       return {
+        toaskshow:false,
         type:this.$route.query.type,
         playdata:['用餐','住宿','会务','K歌','骑马','漂流','蹦极','竹筏','登山','野营','采摘','烧烤','骑行','摄影','垂钓','庙宇','道观','游乐场','烤全羊','水上游船','真人CS','麻将','台球','乒乓球','温泉','儿童乐园','动物园','耕种体验','滑雪','攀岩','参观','玻璃栈道','休闲','高尔夫','品茶'],
         active: 0,               //选项卡参数
@@ -191,7 +194,13 @@
               this.sightdata=response.body.data.list;
             }
           }else{
-            alert('暂无数据')
+            if(this.type === 'farm'){
+              this.farmdata = null;
+              this.toaskshow = true;
+            }else{
+              this.sightdata = null;
+              this.toaskshow = true;
+            }
           }
         })
       },
@@ -215,7 +224,8 @@
       scroller,
       sights,
       farmlist,
-      icon
+      icon,
+      Toast
     }
   }
 </script>
