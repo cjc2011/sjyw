@@ -15,7 +15,7 @@
           <p class="city_title">热门城市</p>
           <div class="hot_city_warpper">
             <ul class="hot_city_list">
-              <li class="hot_city" v-for="city in hotCity">{{city}}</li>
+              <li class="hot_city" v-for="city in hotCity" @click="select(city)">{{city}}</li>
             </ul>
           </div>
         </div>

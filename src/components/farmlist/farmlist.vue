@@ -19,7 +19,7 @@
                 <rater :value="4" disabled  :margin="0" :font-size="12"></rater>
               </div>
               <div class="farm_porject">
-                <span class="porject" v-for="item in item.farm_program.split(',')">
+                <span class="porject" v-for="item in item.farm_program.split(',').slice(0,2)">
                   {{item}}
                 </span>
               </div>
@@ -50,9 +50,6 @@
       return {
         url: 'http://www.bjsjyw.cn'
       }
-    },
-    created() {
-
     },
     methods: {
       farminfo(item) {

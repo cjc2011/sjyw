@@ -6,7 +6,7 @@
     </div>
     <div class="search-warpper" :class="{shadow:green}">
       <i class="icon weui_icon_search"></i>
-      <input type="search" placeholder="假期去哪玩">
+      <input type="search" placeholder="假期去哪玩" @focus="fn">
     </div>
     <span  class="icon iconfont icon-wo" :class="{ green: green}" @click="showuser"></span>
   </header>
@@ -33,6 +33,9 @@
       window.removeEventListener('scroll',this.handleScroll)
     },
     methods:{
+      fn(){
+        this.$router.push('search')
+      },
       cityshow(){
         this.$router.push('/selectcity')
       },
@@ -129,8 +132,8 @@
       }
       .icon {
         position: absolute;
-        top: 4px;
-        left: 15px;
+        top: 6px;
+        left: 12px;
         line-height: 1;
       }
       .weui_icon_search:before {

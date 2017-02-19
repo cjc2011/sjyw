@@ -45,6 +45,7 @@
     },
     methods: {
       split(str){
+
         let arr = str.split(',').slice(0,2);
         return arr
       },

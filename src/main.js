@@ -10,6 +10,7 @@ import teamcustom from '../src/components/teamcustom/teamcustom.vue';
 import searchlist from '../src/components/searchlist/searchlist.vue';
 import user from '../src/components/user/user.vue';
 import login from '../src/components/login/login.vue';
+import search from '../src/components/search/search.vue';
 import './commont/css/reset.css';
 import '../node_modules/vux/src/styles/reset.less'
 
@@ -26,7 +27,8 @@ let routes = [
   {path:'/teamcustom',component:teamcustom},
   {path:'/searchlist',component: searchlist},
   {path:'/user',component: user},
-  {path:'/login',component: login}
+  {path:'/login',component: login},
+  {path:'/search',component: search}
 ];
 const router = new VueRouter({
   routes
